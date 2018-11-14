@@ -3,6 +3,7 @@ package com.optionsquared.access;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -13,14 +14,19 @@ import com.google.firebase.storage.FirebaseStorage;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference ref = database.getReference();
+    FirebaseDatabase database;
+    DatabaseReference ref;
     Place selectedLoc = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        this.database = FirebaseDatabase.getInstance();
+        ref = database.getReference();
+
+        getPlace("here");
     }
 
     /** Retrieves the Place information from the realtime database if it
@@ -33,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(!dataSnapshot.exists()) {
+                if(dataSnapshot.exists()) {
                     selectedLoc = dataSnapshot.getValue(Place.class);
                 } else {
                     selectedLoc = null;
