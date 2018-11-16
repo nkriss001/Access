@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     FirebaseDatabase database;
     DatabaseReference ref;
-    Place selectedLoc = null;
+    com.optionsquared.access.Place selectedLoc = null;
     private GoogleMap mMap;
     PlaceAutocompleteFragment placeAutoComplete;
 
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.database = FirebaseDatabase.getInstance();
         ref = database.getReference();
 
-        getPlace("here");
+        getPlace("foo");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -97,18 +97,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
 
     }
+
+    void createDummyPlace() {
+        com.optionsquared.access.Place foo = new com.optionsquared.access.Place("foo");
+        Review bar = new Review(3, "bad bad", (long) 4.20, "bar", true);
+        Review baz = new Review(1, "super bad", (long) 4.20, "baz", true);
+        foo.addReview(bar);
+        foo.addReview(baz);
+
+        ref.child("places").child("foo").setValue(foo);
+    }
+
     /** Retrieves the Place information from the realtime database if it
      * exists, saves that info in selectedLoc or null if it doesn't exist.
      * @param key
      */
-    public void getPlace(String key) {
+    void getPlace(String key) {
         DatabaseReference placeRef = ref.child("places").child(key);
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
-                    selectedLoc = dataSnapshot.getValue(Place.class);
+                    selectedLoc = new com.optionsquared.access.Place(dataSnapshot);
                 } else {
                     selectedLoc = null;
                 }
@@ -122,6 +133,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         placeRef.addListenerForSingleValueEvent(valueEventListener);
     }
-
 
 }

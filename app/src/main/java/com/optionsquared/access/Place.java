@@ -1,12 +1,15 @@
 package com.optionsquared.access;
 
+import com.google.firebase.database.DataSnapshot;
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Place {
-    private ArrayList<Review> reviews;
-    private ArrayList<Review> issues;
-    private double avgRating;
-    private String key;
+public class Place implements Serializable {
+    public ArrayList<Review> reviews;
+    public ArrayList<Review> issues;
+    public long avgRating;
+    public String key;
 
     Place(String key) {
         this.key = key;
@@ -15,11 +18,34 @@ public class Place {
         setRating();
     }
 
-    public void addReview(Review r) {
-        reviews.add(r);
+    Place(DataSnapshot dataSnapshot) {
+        this.key = dataSnapshot.getKey();
+        this.avgRating = (long) dataSnapshot.child("avgRating").getValue();
 
-        // recompute the average rating
-        setRating();
+        reviews = new ArrayList<>();
+        issues = new ArrayList<>();
+
+
+        DataSnapshot reviews = dataSnapshot.child("reviews");
+        Review temp;
+        for(DataSnapshot review : reviews.getChildren()) {
+            temp = new Review(review);
+            addReview(temp);
+        }
+
+        DataSnapshot issues = dataSnapshot.child("issues");
+        for(DataSnapshot issue : issues.getChildren()) {
+            temp = new Review(issue);
+            addIssue(temp);
+        }
+    }
+
+    public void addReview(Review r) {
+        if(r != null) {
+            reviews.add(r);
+            // recompute the average rating
+            setRating();
+        }
     }
 
     public void addIssue(Review r) {
