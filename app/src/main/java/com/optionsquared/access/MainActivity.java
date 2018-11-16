@@ -11,14 +11,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -28,7 +25,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     FirebaseDatabase database;
     DatabaseReference ref;
-    com.optionsquared.access.Place selectedLoc = null;
+    SerialPlace selectedLoc = null;
     private GoogleMap mMap;
     PlaceAutocompleteFragment placeAutoComplete;
 
@@ -39,6 +36,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.database = FirebaseDatabase.getInstance();
         ref = database.getReference();
 
+        createDummyPlace();
         getPlace("foo");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -99,16 +97,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     void createDummyPlace() {
-        com.optionsquared.access.Place foo = new com.optionsquared.access.Place("foo");
-        Review bar = new Review(3, "bad bad", (long) 4.20, "bar", true);
-        Review baz = new Review(1, "super bad", (long) 4.20, "baz", true);
+        SerialPlace foo = new SerialPlace("foo");
+        Review bar = new Review(3, "bad bad", (long) 4.20, "bar", true, 0);
+        Review baz = new Review(1, "super bad", (long) 4.20, "baz", true, 0);
         foo.addReview(bar);
         foo.addReview(baz);
 
         ref.child("places").child("foo").setValue(foo);
     }
 
-    /** Retrieves the Place information from the realtime database if it
+    /** Retrieves the SerialPlace information from the realtime database if it
      * exists, saves that info in selectedLoc or null if it doesn't exist.
      * @param key
      */
@@ -119,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
-                    selectedLoc = new com.optionsquared.access.Place(dataSnapshot);
+                    selectedLoc = new SerialPlace(dataSnapshot);
                 } else {
                     selectedLoc = null;
                 }

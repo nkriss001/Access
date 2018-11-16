@@ -5,20 +5,20 @@ import com.google.firebase.database.DataSnapshot;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Place implements Serializable {
+public class SerialPlace implements Serializable {
     public ArrayList<Review> reviews;
     public ArrayList<Review> issues;
     public long avgRating;
     public String key;
 
-    Place(String key) {
+    SerialPlace(String key) {
         this.key = key;
         reviews = new ArrayList<>();
         issues = new ArrayList<>();
         setRating();
     }
 
-    Place(DataSnapshot dataSnapshot) {
+    SerialPlace(DataSnapshot dataSnapshot) {
         this.key = dataSnapshot.getKey();
         this.avgRating = (long) dataSnapshot.child("avgRating").getValue();
 
