@@ -27,14 +27,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
@@ -58,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ref = database.getReference();
 
         createDummyPlace();
+<<<<<<< HEAD
 
         final TextView name = findViewById(R.id.name);
         final TextView alerts = findViewById(R.id.alerts);
@@ -106,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+=======
+>>>>>>> 44e1e249038dbd6d133b16d20a4098c177b60c85
         getPlace("foo");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -184,7 +184,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ref.child("places").child("foo").setValue(foo);
     }
 
+<<<<<<< HEAD
     /** Retrieves the Place information from the realtime database if it
+=======
+    /** Retrieves the SerialPlace information from the realtime database if it
+>>>>>>> 44e1e249038dbd6d133b16d20a4098c177b60c85
      * exists, saves that info in selectedLoc or null if it doesn't exist.
      * @param key
      */

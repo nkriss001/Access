@@ -65,4 +65,8 @@ public class SerialPlace implements Serializable {
         }
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 44e1e249038dbd6d133b16d20a4098c177b60c85
