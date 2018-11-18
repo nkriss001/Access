@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
-
     private void initMap() {
         final TextView name = findViewById(R.id.name);
         final TextView alerts = findViewById(R.id.alerts);
