@@ -55,13 +55,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ref = database.getReference();
 
         createDummyPlace();
+        initSlidingPanel();
+        getPlace("foo");
+        initMap();
 
-        final TextView name = findViewById(R.id.name);
-        final TextView alerts = findViewById(R.id.alerts);
+    }
+
+    private void initSlidingPanel() {
+
         final LinearLayout results = findViewById(R.id.results);
         final LinearLayout scroll = findViewById(R.id.scroll);
         final ImageButton arrow = findViewById(R.id.arrow);
-        final RatingBar rating = findViewById(R.id.rating);
+
         final Boolean[] extend = {false};
         arrow.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,14 +107,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 results.setLayoutParams(params);
             }
         });
+    }
 
-        getPlace("foo");
+
+    private void initMap() {
+        final TextView name = findViewById(R.id.name);
+        final TextView alerts = findViewById(R.id.alerts);
+        final RatingBar rating = findViewById(R.id.rating);
+        final LinearLayout results = findViewById(R.id.results);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         placeAutoComplete = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete);
-         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+        placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
 
@@ -131,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-         mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
