@@ -1,5 +1,6 @@
 package com.optionsquared.access;
 
+import android.app.ActionBar;
 import android.graphics.Color;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -77,21 +78,40 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     arrow.setImageResource(android.R.drawable.arrow_down_float);
                     ArrayList<Review> issues = selectedLoc.issues;
                     ArrayList<Review> reviews = selectedLoc.reviews;
+                    TextView issueText = new TextView(v.getContext());
+                    scroll.addView(issueText);
+                    issueText.setText("Issues:");
+                    for (Review issue : issues) {
+                        CardView newIssue = new CardView(v.getContext());
+                        scroll.addView(newIssue);
+                        LinearLayout issueLayout = new LinearLayout(v.getContext());
+                        issueLayout.setOrientation(LinearLayout.VERTICAL);
+                        newIssue.addView(issueLayout);
+                        TextView username = new TextView(v.getContext());
+                        username.setText(issue.name);
+                        issueLayout.addView(username);
+                        TextView issueContent = new TextView(v.getContext());
+                        issueContent.setText(issue.text);
+                        issueLayout.addView(issueContent);
+                        TextView issueTime = new TextView(v.getContext());
+                        issueTime.setText(Long.toString(issue.time));
+                        issueLayout.addView(issueTime);
+                    }
                     TextView reviewText = new TextView(v.getContext());
                     scroll.addView(reviewText);
                     reviewText.setText("Reviews:");
                     for (Review review : reviews) {
                         CardView newReview = new CardView(v.getContext());
+                        scroll.addView(newReview);
                         LinearLayout reviewLayout = new LinearLayout(v.getContext());
                         reviewLayout.setOrientation(LinearLayout.VERTICAL);
-                        scroll.addView(newReview);
                         newReview.addView(reviewLayout);
                         TextView username = new TextView(v.getContext());
                         username.setText(review.name);
                         reviewLayout.addView(username);
-                        RatingBar stars = new RatingBar(v.getContext());
-                        stars.setMax(5);
+                        RatingBar stars = new RatingBar(v.getContext(), null, android.R.attr.ratingBarStyleSmall);
                         stars.setRating(review.rating);
+                        stars.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT));
                         reviewLayout.addView(stars);
                         TextView reviewContent = new TextView(v.getContext());
                         reviewContent.setText(review.text);
