@@ -2,41 +2,176 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".MainActivity"
         android:orientation="vertical"
-        android:weightSum="1">
+        android:weightSum="1"
+        tools:context=".MainActivity">
 
         <fragment
             android:id="@+id/place_autocomplete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-            />
-        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:map="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <fragment
             android:id="@+id/map"
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             tools:context=".MainActivity" />
 
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="400dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageButton
+            android:id="@+id/arrow"
+            android:layout_width="30sp"
+            android:layout_height="30sp"
+            android:background="@android:color/transparent"
+            app:srcCompat="@android:drawable/arrow_up_float" />
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/card"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_weight="1"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@android:color/white"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="178dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    app:srcCompat="@drawable/common_full_open_on_phone" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingBottom="10sp"
+                        android:paddingTop="10sp"
+                        android:text="NAME"
+                        android:textAlignment="center"
+                        android:textSize="30sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <RatingBar
+                                android:id="@+id/rating"
+                                style="@android:style/Widget.DeviceDefault.RatingBar.Indicator"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:max="5"
+                                android:numStars="5" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/alerts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:paddingRight="20sp"
+                            android:text="Alert"
+                            android:textAlignment="textEnd"
+                            android:textSize="20sp" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:paddingBottom="10sp"
+                        android:paddingLeft="5sp"
+                        android:paddingRight="5sp"
+                        android:paddingTop="10sp">
+
+                        <Button
+                            android:id="@+id/button5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingBottom="10sp"
+                            android:paddingTop="10sp"
+                            android:text="Write Review" />
+
+                        <Button
+                            android:id="@+id/button6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingBottom="10sp"
+                            android:paddingTop="10sp"
+                            android:text="Add Issue" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:background="@android:color/white">
+
+            <LinearLayout
+                android:id="@+id/scroll"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 

@@ -1,0 +1,4 @@
+#Wed Nov 14 11:42:07 PST 2018
+base.0=/Users/nicholaskriss/Desktop/cs160/finalproject-fa18-group4-fa18/Access/app/build/intermediates/transforms/dexMerger/debug/0
+path.0=classes.dex
+renamed.0=classes.dex

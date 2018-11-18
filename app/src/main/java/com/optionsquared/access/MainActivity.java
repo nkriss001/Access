@@ -1,8 +1,24 @@
 package com.optionsquared.access;
 
+import android.graphics.Color;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,11 +40,13 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     FirebaseDatabase database;
     DatabaseReference ref;
-    Place selectedLoc = null;
+    SerialPlace selectedLoc = null;
     private GoogleMap mMap;
     PlaceAutocompleteFragment placeAutoComplete;
 
@@ -39,7 +57,56 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.database = FirebaseDatabase.getInstance();
         ref = database.getReference();
 
-        getPlace("here");
+        createDummyPlace();
+
+        final TextView name = findViewById(R.id.name);
+        final TextView alerts = findViewById(R.id.alerts);
+        final LinearLayout results = findViewById(R.id.results);
+        final LinearLayout scroll = findViewById(R.id.scroll);
+        final ImageButton arrow = findViewById(R.id.arrow);
+        final RatingBar rating = findViewById(R.id.rating);
+        final Boolean[] extend = {false};
+        arrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LinearLayout.MarginLayoutParams params = (LinearLayout.MarginLayoutParams) results.getLayoutParams();
+                if (!extend[0]) {
+                    results.animate().translationY(-1000);
+                    arrow.setImageResource(android.R.drawable.arrow_down_float);
+                    ArrayList<Review> issues = selectedLoc.issues;
+                    ArrayList<Review> reviews = selectedLoc.reviews;
+                    TextView reviewText = new TextView(v.getContext());
+                    scroll.addView(reviewText);
+                    reviewText.setText("Reviews:");
+                    for (Review review : reviews) {
+                        CardView newReview = new CardView(v.getContext());
+                        LinearLayout reviewLayout = new LinearLayout(v.getContext());
+                        reviewLayout.setOrientation(LinearLayout.VERTICAL);
+                        scroll.addView(newReview);
+                        newReview.addView(reviewLayout);
+                        TextView username = new TextView(v.getContext());
+                        username.setText(review.name);
+                        reviewLayout.addView(username);
+                        RatingBar stars = new RatingBar(v.getContext());
+                        stars.setMax(5);
+                        stars.setRating(review.rating);
+                        reviewLayout.addView(stars);
+                        TextView reviewContent = new TextView(v.getContext());
+                        reviewContent.setText(review.text);
+                        reviewLayout.addView(reviewContent);
+                    }
+                    extend[0] = true;
+                } else {
+                    results.animate().translationY(0);
+                    arrow.setImageResource(android.R.drawable.arrow_up_float);
+                    scroll.removeAllViews();
+                    extend[0] = false;
+                }
+                results.setLayoutParams(params);
+            }
+        });
+
+        getPlace("foo");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -49,8 +116,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onPlaceSelected(Place place) {
 
-                addMarker(place);            }
-
+                name.setText(place.getName());
+                rating.setRating(selectedLoc.avgRating);
+                ArrayList<Review> issues = selectedLoc.issues;
+                if (issues.size() > 0) {
+                    alerts.setText(issues.size() + " Alerts");
+                } else {
+                    alerts.setText("");
+                }
+                results.setVisibility(View.VISIBLE);
+                addMarker(place);
+            }
 
             @Override
             public void onError(Status status) {
@@ -97,18 +173,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
 
     }
+
+    void createDummyPlace() {
+        SerialPlace foo = new SerialPlace("foo");
+        Review bar = new Review(3, "bad bad", (long) 4.20, "bar", true, 0);
+        Review baz = new Review(1, "super bad", (long) 4.20, "baz", true, 0);
+        foo.addReview(bar);
+        foo.addReview(baz);
+
+        ref.child("places").child("foo").setValue(foo);
+    }
+
     /** Retrieves the Place information from the realtime database if it
      * exists, saves that info in selectedLoc or null if it doesn't exist.
      * @param key
      */
-    public void getPlace(String key) {
+    void getPlace(String key) {
         DatabaseReference placeRef = ref.child("places").child(key);
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
-                    selectedLoc = dataSnapshot.getValue(Place.class);
+                    selectedLoc = new SerialPlace(dataSnapshot);
                 } else {
                     selectedLoc = null;
                 }
@@ -122,6 +209,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         placeRef.addListenerForSingleValueEvent(valueEventListener);
     }
-
 
 }
