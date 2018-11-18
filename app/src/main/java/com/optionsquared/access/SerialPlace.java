@@ -28,20 +28,20 @@ public class SerialPlace implements Serializable {
 
         DataSnapshot reviews = dataSnapshot.child("reviews");
         Review temp;
-        for(DataSnapshot review : reviews.getChildren()) {
+        for (DataSnapshot review : reviews.getChildren()) {
             temp = new Review(review);
             addReview(temp);
         }
 
         DataSnapshot issues = dataSnapshot.child("issues");
-        for(DataSnapshot issue : issues.getChildren()) {
+        for (DataSnapshot issue : issues.getChildren()) {
             temp = new Review(issue);
             addIssue(temp);
         }
     }
 
     public void addReview(Review r) {
-        if(r != null) {
+        if (r != null) {
             reviews.add(r);
             // recompute the average rating
             setRating();
@@ -54,7 +54,7 @@ public class SerialPlace implements Serializable {
 
 
     public void setRating() {
-        if(reviews.size() == 0) {
+        if (reviews.size() == 0) {
             return;
         } else {
             int sum = 0;
@@ -65,8 +65,4 @@ public class SerialPlace implements Serializable {
         }
     }
 
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 44e1e249038dbd6d133b16d20a4098c177b60c85

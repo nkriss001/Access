@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ref = database.getReference();
 
         createDummyPlace();
-<<<<<<< HEAD
 
         final TextView name = findViewById(R.id.name);
         final TextView alerts = findViewById(R.id.alerts);
@@ -104,8 +103,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-=======
->>>>>>> 44e1e249038dbd6d133b16d20a4098c177b60c85
         getPlace("foo");
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -184,11 +181,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         ref.child("places").child("foo").setValue(foo);
     }
 
-<<<<<<< HEAD
-    /** Retrieves the Place information from the realtime database if it
-=======
     /** Retrieves the SerialPlace information from the realtime database if it
->>>>>>> 44e1e249038dbd6d133b16d20a4098c177b60c85
      * exists, saves that info in selectedLoc or null if it doesn't exist.
      * @param key
      */
