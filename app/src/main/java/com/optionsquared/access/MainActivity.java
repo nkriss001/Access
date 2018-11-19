@@ -2,6 +2,7 @@ package com.optionsquared.access;
 
 import android.app.ActionBar;
 import android.graphics.Color;
+import android.media.Image;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
@@ -47,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     SerialPlace selectedLoc = null;
     private GoogleMap mMap;
     PlaceAutocompleteFragment placeAutoComplete;
+    private final String APIKEY = "AIzaSyBbkrnKO95otvPVdAYWwNGCa2Sxx6Vcxik";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         final TextView alerts = findViewById(R.id.alerts);
         final RatingBar rating = findViewById(R.id.rating);
         final LinearLayout results = findViewById(R.id.results);
+        final ImageView imageView = findViewById(R.id.imageView4);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -142,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-
+                imageView.setImageResource(R.drawable.dwinelle);
                 name.setText(place.getName());
                 rating.setRating(selectedLoc.avgRating);
                 ArrayList<Review> issues = selectedLoc.issues;
@@ -203,8 +208,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     void createDummyPlace() {
         SerialPlace foo = new SerialPlace("foo");
-        Review bar = new Review(3, "bad bad", (long) 4.20, "bar", true, 0);
-        Review baz = new Review(1, "super bad", (long) 4.20, "baz", true, 0);
+        Review bar = new Review(3, "Dwinelle is unpredictable in terms of elevators working.", (long) 4.20, "John Doe", true, 0);
+        Review baz = new Review(1, "The elevator is always broken and the layout is confusing.", (long) 4.20, "baz", true, 0);
         foo.addReview(bar);
         foo.addReview(baz);
 
