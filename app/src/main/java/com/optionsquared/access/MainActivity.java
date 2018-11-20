@@ -1,6 +1,7 @@
 package com.optionsquared.access;
 
 import android.app.ActionBar;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
@@ -8,9 +9,12 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.util.Log;
+import android.util.Size;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,76 +69,54 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initSlidingPanel() {
-
-        final LinearLayout results = findViewById(R.id.results);
-        final LinearLayout scroll = findViewById(R.id.scroll);
         final ImageButton arrow = findViewById(R.id.arrow);
 
         final Boolean[] extend = {false};
         arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LinearLayout.MarginLayoutParams params = (LinearLayout.MarginLayoutParams) results.getLayoutParams();
-                if (!extend[0]) {
-                    results.animate().translationY(-900);
-                    arrow.setImageResource(android.R.drawable.arrow_down_float);
-                    ArrayList<Review> issues = selectedLoc.issues;
-                    ArrayList<Review> reviews = selectedLoc.reviews;
-                    TextView issueText = new TextView(v.getContext());
-                    scroll.addView(issueText);
-                    issueText.setText("Issues:");
-                    issueText.setTextSize(40);
-                    for (Review issue : issues) {
-                        CardView newIssue = new CardView(v.getContext());
-                        scroll.addView(newIssue);
-                        LinearLayout issueLayout = new LinearLayout(v.getContext());
-                        issueLayout.setOrientation(LinearLayout.VERTICAL);
-                        newIssue.addView(issueLayout);
-                        TextView username = new TextView(v.getContext());
-                        username.setText(issue.name);
-                        username.setTextSize(25);
-                        issueLayout.addView(username);
-                        TextView issueContent = new TextView(v.getContext());
-                        issueContent.setText(issue.text);
-                        issueContent.setTextSize(20);
-                        issueLayout.addView(issueContent);
-                        TextView issueTime = new TextView(v.getContext());
-                        issueTime.setText(Long.toString(issue.time));
-                        issueLayout.addView(issueTime);
+                final LinearLayout results = findViewById(R.id.results);
+                final ImageButton arrow = findViewById(R.id.arrow);
+                final RecyclerView recyclerView = findViewById(R.id.recycler);
+                final ConstraintLayout card = findViewById(R.id.constraintLayout);
+
+
+
+                final Boolean[] extend = {false};
+                arrow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LinearLayout.MarginLayoutParams params = (LinearLayout.MarginLayoutParams) results.getLayoutParams();
+                        if (!extend[0]) {
+                            Point size = new Point();
+                            getWindowManager().getDefaultDisplay().getSize(size);
+                            int height = size.y - 950;
+                            ViewGroup.LayoutParams lp = card.getLayoutParams();
+                            lp.height = -3;
+                            card.setLayoutParams(lp);
+
+                            LinearLayout.LayoutParams lp2 =
+                                    new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, size.y - results.getHeight());
+                            recyclerView.setLayoutParams(lp2);
+
+                            results.animate().translationY(-height);
+                            arrow.setImageResource(android.R.drawable.arrow_down_float);
+                            final LinearLayoutManager manager = new LinearLayoutManager(v.getContext(), LinearLayoutManager.VERTICAL, false);
+                            ArrayList<Review> issues = selectedLoc.issues;
+                            ArrayList<Review> reviews = selectedLoc.reviews;
+                            issues.addAll(reviews);
+                            ReviewAdapter r = new ReviewAdapter(issues);
+                            recyclerView.setAdapter(r);
+                            recyclerView.setLayoutManager(manager);
+                            extend[0] = true;
+                        } else {
+                            results.animate().translationY(0);
+                            arrow.setImageResource(android.R.drawable.arrow_up_float);
+                            extend[0] = false;
+                        }
+                        results.setLayoutParams(params);
                     }
-                    TextView reviewText = new TextView(v.getContext());
-                    scroll.addView(reviewText);
-                    reviewText.setText("Reviews:");
-                    reviewText.setTextSize(40);
-                    for (Review review : reviews) {
-                        CardView newReview = new CardView(v.getContext());
-                        scroll.addView(newReview);
-                        LinearLayout reviewLayout = new LinearLayout(v.getContext());
-                        reviewLayout.setOrientation(LinearLayout.VERTICAL);
-                        reviewLayout.setPadding(20, 10, 20, 10);
-                        newReview.addView(reviewLayout);
-                        TextView username = new TextView(v.getContext());
-                        username.setText(review.name);
-                        username.setTextSize(25);
-                        username.setTypeface(Typeface.DEFAULT);
-                        reviewLayout.addView(username);
-                        RatingBar stars = new RatingBar(v.getContext(), null, android.R.attr.ratingBarStyleSmall);
-                        stars.setRating(review.rating);
-                        stars.setLayoutParams(new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT, ActionBar.LayoutParams.WRAP_CONTENT));
-                        reviewLayout.addView(stars);
-                        TextView reviewContent = new TextView(v.getContext());
-                        reviewContent.setText(review.text);
-                        reviewContent.setTextSize(20);
-                        reviewLayout.addView(reviewContent);
-                    }
-                    extend[0] = true;
-                } else {
-                    results.animate().translationY(0);
-                    arrow.setImageResource(android.R.drawable.arrow_up_float);
-                    scroll.removeAllViews();
-                    extend[0] = false;
-                }
-                results.setLayoutParams(params);
+                });
             }
         });
     }
@@ -216,10 +198,21 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     void createDummyPlace() {
         SerialPlace foo = new SerialPlace("foo");
-        Review bar = new Review(3, "Dwinelle is unpredictable in terms of elevators working.", (long) 4.20, "John Doe", true, 0);
-        Review baz = new Review(1, "The elevator is always broken and the layout is confusing.", (long) 4.20, "baz", true, 0);
+
+        Review bar = new Review(3, "Dwinelle is unpredictable in terms of elevators working.", (long) 4.20, "Oski", true, 0);
+        Review baz = new Review(1, "The elevator is always broken and the layout is confusing.", (long) 4.20, "Dirks", true, 0);
+        Review b3 = new Review(3, "Dwinelle is unpredictable in terms of elevators working.", (long) 4.20, "Oski", true, 0);
+        Review b4 = new Review(1, "The elevator is always broken and the layout is confusing.", (long) 4.20, "Dirks", true, 0);
+
+        Review bork = new Review(1, "The elevator is down!", (long) 4.20, "Carol Christ", false, 0);
+
+        foo.addReview(b3);
+        foo.addReview(b4);
         foo.addReview(bar);
         foo.addReview(baz);
+        foo.addIssue(bork);
+
+
 
         ref.child("places").child("foo").setValue(foo);
     }
