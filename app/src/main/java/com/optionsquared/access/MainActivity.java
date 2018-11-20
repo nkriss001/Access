@@ -112,6 +112,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         } else {
                             results.animate().translationY(0);
                             arrow.setImageResource(android.R.drawable.arrow_up_float);
+                            Point size = new Point();
+                            getWindowManager().getDefaultDisplay().getSize(size);
+                            ViewGroup.LayoutParams lp = card.getLayoutParams();
+                            lp.height = -1;
+                            card.setLayoutParams(lp);
+
+                            LinearLayout.LayoutParams lp2 =
+                                    new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 0);
+                            recyclerView.setLayoutParams(lp2);
                             extend[0] = false;
                         }
                         results.setLayoutParams(params);
