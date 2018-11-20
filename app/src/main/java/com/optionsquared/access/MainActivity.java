@@ -1,12 +1,14 @@
 package com.optionsquared.access;
 
-import android.graphics.Color;
+import android.app.ActionBar;
+import android.graphics.Typeface;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
 import android.util.Log;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.RelativeLayout;
@@ -46,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     SerialPlace selectedLoc = null;
     private GoogleMap mMap;
     PlaceAutocompleteFragment placeAutoComplete;
+    private final String APIKEY = "AIzaSyBbkrnKO95otvPVdAYWwNGCa2Sxx6Vcxik";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,49 +66,41 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initSlidingPanel() {
-
-        final LinearLayout results = findViewById(R.id.results);
-        final LinearLayout scroll = findViewById(R.id.scroll);
         final ImageButton arrow = findViewById(R.id.arrow);
 
         final Boolean[] extend = {false};
         arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                LinearLayout.MarginLayoutParams params = (LinearLayout.MarginLayoutParams) results.getLayoutParams();
-                if (!extend[0]) {
-                    results.animate().translationY(-1000);
-                    arrow.setImageResource(android.R.drawable.arrow_down_float);
-                    ArrayList<Review> issues = selectedLoc.issues;
-                    ArrayList<Review> reviews = selectedLoc.reviews;
-                    TextView reviewText = new TextView(v.getContext());
-                    scroll.addView(reviewText);
-                    reviewText.setText("Reviews:");
-                    for (Review review : reviews) {
-                        CardView newReview = new CardView(v.getContext());
-                        LinearLayout reviewLayout = new LinearLayout(v.getContext());
-                        reviewLayout.setOrientation(LinearLayout.VERTICAL);
-                        scroll.addView(newReview);
-                        newReview.addView(reviewLayout);
-                        TextView username = new TextView(v.getContext());
-                        username.setText(review.name);
-                        reviewLayout.addView(username);
-                        RatingBar stars = new RatingBar(v.getContext());
-                        stars.setMax(5);
-                        stars.setRating(review.rating);
-                        reviewLayout.addView(stars);
-                        TextView reviewContent = new TextView(v.getContext());
-                        reviewContent.setText(review.text);
-                        reviewLayout.addView(reviewContent);
+                final LinearLayout results = findViewById(R.id.results);
+                final ImageButton arrow = findViewById(R.id.arrow);
+                final RecyclerView recyclerView = findViewById(R.id.recycler);
+
+
+                final Boolean[] extend = {false};
+                arrow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        LinearLayout.MarginLayoutParams params = (LinearLayout.MarginLayoutParams) results.getLayoutParams();
+                        if (!extend[0]) {
+                            results.animate().translationY(-1000);
+                            arrow.setImageResource(android.R.drawable.arrow_down_float);
+                            final LinearLayoutManager manager = new LinearLayoutManager(v.getContext());
+                            ArrayList<Review> issues = selectedLoc.issues;
+                            ArrayList<Review> reviews = selectedLoc.reviews;
+                            issues.addAll(reviews);
+                            ReviewAdapter r = new ReviewAdapter(issues);
+                            recyclerView.setAdapter(r);
+                            recyclerView.setLayoutManager(manager);
+                            extend[0] = true;
+                        } else {
+                            results.animate().translationY(0);
+                            arrow.setImageResource(android.R.drawable.arrow_up_float);
+                            extend[0] = false;
+                        }
+                        results.setLayoutParams(params);
                     }
-                    extend[0] = true;
-                } else {
-                    results.animate().translationY(0);
-                    arrow.setImageResource(android.R.drawable.arrow_up_float);
-                    scroll.removeAllViews();
-                    extend[0] = false;
-                }
-                results.setLayoutParams(params);
+                });
             }
         });
     }
@@ -114,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         final TextView alerts = findViewById(R.id.alerts);
         final RatingBar rating = findViewById(R.id.rating);
         final LinearLayout results = findViewById(R.id.results);
+        final ImageView imageView = findViewById(R.id.imageView4);
+
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -122,14 +120,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-
+                imageView.setImageResource(R.drawable.dwinelle);
+                results.setVisibility(View.VISIBLE);
                 name.setText(place.getName());
                 rating.setRating(selectedLoc.avgRating);
                 ArrayList<Review> issues = selectedLoc.issues;
                 if (issues.size() > 0) {
-                    alerts.setText(issues.size() + " Alerts");
+                    alerts.setText(issues.size() + " Alerts!");
                 } else {
-                    alerts.setText("");
+                    alerts.setText("No Alerts");
                 }
                 results.setVisibility(View.VISIBLE);
                 addMarker(place);
@@ -183,10 +182,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     void createDummyPlace() {
         SerialPlace foo = new SerialPlace("foo");
-        Review bar = new Review(3, "bad bad", (long) 4.20, "bar", true, 0);
-        Review baz = new Review(1, "super bad", (long) 4.20, "baz", true, 0);
+        Review bar = new Review(3, "Dwinelle is unpredictable in terms of elevators working.", (long) 4.20, "Oski", true, 0);
+        Review baz = new Review(1, "The elevator is always broken and the layout is confusing.", (long) 4.20, "Dirks", true, 0);
+        Review bork = new Review(1, "The elevator is down!", (long) 4.20, "Carol Christ", false, 0);
         foo.addReview(bar);
         foo.addReview(baz);
+        foo.addIssue(bork);
+
 
         ref.child("places").child("foo").setValue(foo);
     }
