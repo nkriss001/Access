@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initSlidingPanel() {
         final ImageButton arrow = findViewById(R.id.arrow);
 
-        final Boolean[] extend = {false};
         arrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,8 +101,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             results.animate().translationY(-height);
                             arrow.setImageResource(android.R.drawable.arrow_down_float);
                             final LinearLayoutManager manager = new LinearLayoutManager(v.getContext(), LinearLayoutManager.VERTICAL, false);
-                            ArrayList<Review> issues = selectedLoc.issues;
-                            ArrayList<Review> reviews = selectedLoc.reviews;
+                            ArrayList<Review> issues = new ArrayList(selectedLoc.issues);
+                            ArrayList<Review> reviews =  new ArrayList(selectedLoc.reviews);
                             issues.addAll(reviews);
                             ReviewAdapter r = new ReviewAdapter(issues);
                             recyclerView.setAdapter(r);
@@ -119,8 +118,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             card.setLayoutParams(lp);
 
                             LinearLayout.LayoutParams lp2 =
-                                    new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 0);
+                                    new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 300);
                             recyclerView.setLayoutParams(lp2);
+                            ReviewAdapter r = new ReviewAdapter(new ArrayList());
+                            recyclerView.setAdapter(r);
                             extend[0] = false;
                         }
                         results.setLayoutParams(params);
@@ -145,9 +146,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
+                addMarker(place);
+                getPlace((String) place.getName());
                 imageView.setImageResource(R.drawable.dwinelle);
                 results.setVisibility(View.VISIBLE);
-                name.setText(place.getName());
+                name.setText(selectedLoc.key);
                 rating.setRating(selectedLoc.avgRating);
                 ArrayList<Review> issues = selectedLoc.issues;
                 if (issues.size() > 0) {
@@ -156,7 +159,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     alerts.setText("No Alerts");
                 }
                 results.setVisibility(View.VISIBLE);
-                addMarker(place);
             }
 
             @Override
@@ -206,7 +208,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     void createDummyPlace() {
-        SerialPlace foo = new SerialPlace("foo");
+        SerialPlace foo = new SerialPlace("Dwinelle Hall");
 
         Review bar = new Review(3, "Dwinelle is unpredictable in terms of elevators working.", (long) 4.20, "Oski", true, 0);
         Review baz = new Review(1, "The elevator is always broken and the layout is confusing.", (long) 4.20, "Dirks", true, 0);
@@ -221,9 +223,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         foo.addReview(baz);
         foo.addIssue(bork);
 
+        ref.child("places").child("Dwinelle Hall").setValue(foo);
 
+        SerialPlace soda = new SerialPlace("Soda Hall");
 
-        ref.child("places").child("foo").setValue(foo);
+        Review b5 = new Review(5, "Soda's super easy to navigate.", (long) 4.20, "Alice", true, 0);
+        Review b6 = new Review(4, "The elevator is always available", (long) 4.20, "Bob", true, 0);
+
+        //Review bark = new Review(1, "The elevator is down!", (long) 4.20, "Carol Christ", false, 0);
+
+        soda.addReview(b5);
+        soda.addReview(b6);
+        //foo.addIssue(bark);
+
+        ref.child("places").child("Soda Hall").setValue(soda);
     }
 
     /** Retrieves the SerialPlace information from the realtime database if it
@@ -253,3 +266,4 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 }
+
