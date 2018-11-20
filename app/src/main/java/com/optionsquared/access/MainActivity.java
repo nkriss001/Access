@@ -1,6 +1,8 @@
 package com.optionsquared.access;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.support.constraint.ConstraintLayout;
@@ -12,6 +14,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Layout;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Size;
 import android.view.Display;
@@ -68,6 +71,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    public int pxToDp(int px) {
+
+        DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
+        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return dp;
+    }
+
+    public int dpToPx(int dp) {
+        DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
+        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
+        return px;
+    }
+
     private void initSlidingPanel() {
         final ImageButton arrow = findViewById(R.id.arrow);
 
@@ -93,14 +109,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             ViewGroup.LayoutParams lp = card.getLayoutParams();
                             lp.height = -3;
                             card.setLayoutParams(lp);
+                            results.animate().translationY(-height);
 
                             LinearLayout.LayoutParams lp2 =
-                                    new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, size.y - results.getHeight());
+                                    new LinearLayout.LayoutParams(
+                                            RelativeLayout.LayoutParams.MATCH_PARENT,
+                                            size.y - results.getHeight() + 200);
                             recyclerView.setLayoutParams(lp2);
 
-                            results.animate().translationY(-height);
                             arrow.setImageResource(android.R.drawable.arrow_down_float);
-                            final LinearLayoutManager manager = new LinearLayoutManager(v.getContext(), LinearLayoutManager.VERTICAL, false);
+
+                            final LinearLayoutManager manager =
+                                    new LinearLayoutManager(
+                                            v.getContext(),
+                                            LinearLayoutManager.VERTICAL,
+                                            false);
+
                             ArrayList<Review> issues = new ArrayList(selectedLoc.issues);
                             ArrayList<Review> reviews =  new ArrayList(selectedLoc.reviews);
                             issues.addAll(reviews);
