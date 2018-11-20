@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         final TextView alerts = findViewById(R.id.alerts);
         final RatingBar rating = findViewById(R.id.rating);
         final LinearLayout results = findViewById(R.id.results);
-        final ImageView imageView = findViewById(R.id.imageView4);
+        final ImageView imageView = findViewById(R.id.locationImage);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
