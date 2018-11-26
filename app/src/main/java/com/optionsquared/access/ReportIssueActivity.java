@@ -39,7 +39,9 @@ public class ReportIssueActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (issueText.getText().toString().isEmpty()) {
-                    Toast.makeText(ReportIssueActivity.this, "Please add text to your review", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ReportIssueActivity.this, "Please describe your issue", Toast.LENGTH_LONG).show();
+                } else if (name.getText().toString().isEmpty()) {
+                    Toast.makeText(ReportIssueActivity.this, "Please include your name", Toast.LENGTH_LONG).show();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ReportIssueActivity.this);
                     builder.setMessage("Ready to submit?");

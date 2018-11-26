@@ -44,6 +44,8 @@ public class ReviewActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if (reviewText.getText().toString().isEmpty()) {
                     Toast.makeText(ReviewActivity.this, "Please add text to your review", Toast.LENGTH_LONG).show();
+                } else if (name.getText().toString().isEmpty()) {
+                    Toast.makeText(ReviewActivity.this, "Please include your name", Toast.LENGTH_LONG).show();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ReviewActivity.this);
                     builder.setMessage("Ready to submit?");
