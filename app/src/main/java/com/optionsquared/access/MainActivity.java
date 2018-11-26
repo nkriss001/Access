@@ -47,6 +47,7 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.firebase.database.core.Repo;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
 
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Button issueButton = findViewById(R.id.issueButton);
 
         createDummyPlace();
-        initSlidingPanel();
+
         getPlace("foo");
         initMap();
 
@@ -93,6 +94,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        if (mLayout != null) {
+            mLayout.setAnchorPoint(0.9f);
+        }
+
+        final RecyclerView recyclerView = findViewById(R.id.recycler);
+        final LinearLayoutManager manager =
+                new LinearLayoutManager(
+                        this);
+
     }
 
     @Override
@@ -106,96 +117,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    public int pxToDp(int px) {
-
-        DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
-        int dp = Math.round(px / (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return dp;
-    }
-
-    public int dpToPx(int dp) {
-        DisplayMetrics displayMetrics = getApplicationContext().getResources().getDisplayMetrics();
-        int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));
-        return px;
-    }
-
-    private void initSlidingPanel() {
-        final ImageButton arrow = findViewById(R.id.arrow);
-
-        arrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final LinearLayout results = findViewById(R.id.results);
-                final ImageButton arrow = findViewById(R.id.arrow);
-                final RecyclerView recyclerView = findViewById(R.id.recycler);
-                final ConstraintLayout card = findViewById(R.id.constraintLayout);
-
-
-
-                final Boolean[] extend = {false};
-                arrow.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        LinearLayout.MarginLayoutParams params = (LinearLayout.MarginLayoutParams) results.getLayoutParams();
-                        if (!extend[0]) {
-                            Point size = new Point();
-                            getWindowManager().getDefaultDisplay().getSize(size);
-                            int height = size.y - 950;
-                            ViewGroup.LayoutParams lp = card.getLayoutParams();
-                            lp.height = -3;
-                            card.setLayoutParams(lp);
-                            results.animate().translationY(-height);
-
-                            LinearLayout.LayoutParams lp2 =
-                                    new LinearLayout.LayoutParams(
-                                            RelativeLayout.LayoutParams.MATCH_PARENT,
-                                            size.y - results.getHeight() + 200);
-                            recyclerView.setLayoutParams(lp2);
-
-                            arrow.setImageResource(android.R.drawable.arrow_down_float);
-
-                            final LinearLayoutManager manager =
-                                    new LinearLayoutManager(
-                                            v.getContext(),
-                                            LinearLayoutManager.VERTICAL,
-                                            false);
-
-                            ArrayList<Review> issues = new ArrayList(selectedLoc.issues);
-                            ArrayList<Review> reviews =  new ArrayList(selectedLoc.reviews);
-                            issues.addAll(reviews);
-                            ReviewAdapter r = new ReviewAdapter(issues);
-                            recyclerView.setAdapter(r);
-                            recyclerView.setLayoutManager(manager);
-                            extend[0] = true;
-                        } else {
-                            results.animate().translationY(0);
-                            arrow.setImageResource(android.R.drawable.arrow_up_float);
-                            Point size = new Point();
-                            getWindowManager().getDefaultDisplay().getSize(size);
-                            ViewGroup.LayoutParams lp = card.getLayoutParams();
-                            lp.height = -1;
-                            card.setLayoutParams(lp);
-
-                            LinearLayout.LayoutParams lp2 =
-                                    new LinearLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, 300);
-                            recyclerView.setLayoutParams(lp2);
-                            ReviewAdapter r = new ReviewAdapter(new ArrayList());
-                            recyclerView.setAdapter(r);
-                            extend[0] = false;
-                        }
-                        results.setLayoutParams(params);
-                    }
-                });
-            }
-        });
-    }
 
     private void initMap() {
-        final TextView name = findViewById(R.id.name);
-        final TextView alerts = findViewById(R.id.alerts);
-        final RatingBar rating = findViewById(R.id.rating);
-        final LinearLayout results = findViewById(R.id.results);
-        final ImageView imageView = findViewById(R.id.locationImage);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -207,17 +130,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onPlaceSelected(Place place) {
                 addMarker(place);
                 getPlace((String) place.getName());
-                imageView.setImageResource(R.drawable.dwinelle);
-                results.setVisibility(View.VISIBLE);
-                name.setText(selectedLoc.key);
-                rating.setRating(selectedLoc.avgRating);
-                ArrayList<Review> issues = selectedLoc.issues;
-                if (issues.size() > 0) {
-                    alerts.setText(issues.size() + " Alerts!");
-                } else {
-                    alerts.setText("No Alerts");
-                }
-                results.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -296,6 +208,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //foo.addIssue(bark);
 
         ref.child("places").child("Soda Hall").setValue(soda);
+
+        selectedLoc = soda;
     }
 
     /** Retrieves the SerialPlace information from the realtime database if it
@@ -310,6 +224,36 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.exists()) {
                     selectedLoc = new SerialPlace(dataSnapshot);
+
+                    final TextView name = findViewById(R.id.name);
+                    final TextView alerts = findViewById(R.id.alerts);
+                    final RatingBar rating = findViewById(R.id.rating);
+                    final ImageView imageView = findViewById(R.id.locationImage);
+                    SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+
+                    imageView.setImageResource(R.drawable.dwinelle);
+                    name.setText(selectedLoc.key);
+                    rating.setRating(selectedLoc.avgRating);
+                    ArrayList<Review> issues = selectedLoc.issues;
+                    if (issues.size() > 0) {
+                        alerts.setText(issues.size() + " Alerts!");
+                    } else {
+                        alerts.setText("No Alerts");
+                    }
+
+                    final RecyclerView recyclerView = findViewById(R.id.recycler);
+                    final LinearLayoutManager manager =
+                            new LinearLayoutManager(
+                                    getApplicationContext());
+
+                    issues = selectedLoc.issues;
+                    issues.addAll(selectedLoc.reviews);
+                    ReviewAdapter r = new ReviewAdapter(issues);
+                    recyclerView.setAdapter(r);
+                    recyclerView.setLayoutManager(manager);
+
+
+                    mLayout.setScrollableView(recyclerView);
                 } else {
                     selectedLoc = null;
                 }
@@ -325,4 +269,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
 }
+
+
+
+
 
