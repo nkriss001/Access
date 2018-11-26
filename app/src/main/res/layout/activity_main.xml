@@ -13,8 +13,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        sothree:umanoPanelHeight="205dp"
+        sothree:umanoPanelHeight="230dp"
         sothree:umanoShadowHeight="4dp"
+        sothree:umanoOverlay="true"
         sothree:umanoScrollableView="@+id/recycler"
         >
 
@@ -44,19 +45,22 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#ffffff"
             android:orientation="vertical"
+            android:topRightRadius="16dp"
             android:clickable="true"
             android:focusable="false"
             android:id="@+id/card">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:background="@drawable/shape"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="0"
                 android:orientation="horizontal"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 >
 
                 <ImageView
@@ -64,7 +68,8 @@
                     android:layout_width="175dp"
                     android:layout_height="175dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="5dp"
+                    android:layout_gravity="center_vertical"
                     android:src="@drawable/dwinelle"
                     app:srcCompat="@drawable/common_full_open_on_phone" />
 
@@ -77,9 +82,8 @@
 
                     <TextView
                         android:id="@+id/name"
-                        android:layout_width="181dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center"
                         android:paddingBottom="10sp"
                         android:paddingTop="10sp"
                         android:text="NAME"
@@ -89,37 +93,32 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:layout_gravity="center_horizontal">
 
-                        <LinearLayout
-                            android:layout_width="124dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <RatingBar
-                                android:id="@+id/rating"
-                                style="@android:style/Widget.DeviceDefault.RatingBar.Indicator"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:theme="@style/RatingBar"
-                                android:max="5"
-                                android:numStars="5" />
-                        </LinearLayout>
+                        <RatingBar
+                            android:id="@+id/rating"
+                            style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:isIndicator="true"
+                            android:numStars="5"
+                            android:stepSize="1"
+                            android:theme="@style/RatingBar" />
 
                         <TextView
                             android:id="@+id/alerts"
-                            android:layout_width="2dp"
-                            android:layout_height="match_parent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:gravity="center"
-                            android:paddingRight="20sp"
+                            android:layout_marginLeft="10sp"
                             android:text="Alert"
-                            android:textAlignment="textEnd"
                             android:textSize="20sp"
                             tools:ignore="RtlCompat" />
+
                     </LinearLayout>
+
+
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -158,6 +157,7 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler"
+                android:background="#ffffff"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center|top"
