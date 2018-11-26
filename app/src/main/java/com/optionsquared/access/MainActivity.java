@@ -2,6 +2,7 @@ package com.optionsquared.access;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Typeface;
@@ -45,6 +46,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
+import com.google.firebase.database.core.Repo;
 
 import java.util.ArrayList;
 
@@ -56,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     PlaceAutocompleteFragment placeAutoComplete;
     private final String APIKEY = "AIzaSyBbkrnKO95otvPVdAYWwNGCa2Sxx6Vcxik";
+    static int REVIEW_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,11 +67,43 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.database = FirebaseDatabase.getInstance();
         ref = database.getReference();
 
+        Button reviewButton = findViewById(R.id.reviewButton);
+        Button issueButton = findViewById(R.id.issueButton);
+
         createDummyPlace();
         initSlidingPanel();
         getPlace("foo");
         initMap();
 
+        reviewButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, ReviewActivity.class);
+                startActivityForResult(i, REVIEW_REQUEST);
+                // TODO: send location name through intent
+            }
+        });
+
+        issueButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(MainActivity.this, ReportIssueActivity.class);
+                startActivity(i);
+                // TODO: send location name through intent
+            }
+        });
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REVIEW_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Review review = (Review) data.getSerializableExtra("review");
+                // do something with the review data
+            }
+        }
     }
 
     public int pxToDp(int px) {

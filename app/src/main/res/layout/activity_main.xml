@@ -145,7 +145,7 @@
                             android:paddingTop="10sp">
 
                             <Button
-                                android:id="@+id/button5"
+                                android:id="@+id/reviewButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="75sp"
                                 android:layout_weight="1"
@@ -155,7 +155,7 @@
                                 android:textSize="20sp" />
 
                             <Button
-                                android:id="@+id/button6"
+                                android:id="@+id/issueButton"
                                 android:layout_width="wrap_content"
                                 android:layout_height="75sp"
                                 android:layout_weight="1"
