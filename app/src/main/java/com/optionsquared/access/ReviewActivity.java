@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,6 +26,18 @@ public class ReviewActivity extends AppCompatActivity {
         final EditText name = findViewById(R.id.reviewerName);
         final TextView ratingText = findViewById(R.id.ratingText);
         Button submitReviewButton = findViewById(R.id.submitReview);
+
+        Toolbar toolbar = findViewById(R.id.reviewToolbar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         submitReviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
