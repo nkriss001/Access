@@ -1,25 +1,14 @@
 package com.optionsquared.access;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Point;
-import android.graphics.Typeface;
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.util.Size;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -46,7 +35,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
-import com.google.firebase.database.core.Repo;
 
 import java.util.ArrayList;
 
@@ -88,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, ReportIssueActivity.class);
+                i.putExtra("location", selectedLoc);
                 startActivity(i);
                 // TODO: send location name through intent
             }
@@ -181,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void initMap() {
-        final TextView name = findViewById(R.id.name);
+        final TextView name = findViewById(R.id.reviewerName);
         final TextView alerts = findViewById(R.id.alerts);
         final RatingBar rating = findViewById(R.id.rating);
         final LinearLayout results = findViewById(R.id.results);

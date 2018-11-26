@@ -1,6 +1,5 @@
 package com.optionsquared.access;
 
-import android.media.Rating;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +23,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewHold
 
         public ReviewHolder(View v) {
             super(v);
-            name = v.findViewById(R.id.name);
+            name = v.findViewById(R.id.reviewerName);
             review = v.findViewById(R.id.reviewText);
             ratingBar = v.findViewById(R.id.ratingBar);
             sideBarColor = v.findViewById(R.id.sideBar);

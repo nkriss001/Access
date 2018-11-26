@@ -1,7 +1,6 @@
 package com.optionsquared.access;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,9 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
-import java.util.Date;
 
 public class ReviewActivity extends AppCompatActivity {
 
@@ -23,7 +22,7 @@ public class ReviewActivity extends AppCompatActivity {
 
         final RatingBar ratingBar = findViewById(R.id.ratingBar);
         final EditText reviewText = findViewById(R.id.reviewText);
-        final EditText name = findViewById(R.id.name);
+        final EditText name = findViewById(R.id.reviewerName);
         final TextView ratingText = findViewById(R.id.ratingText);
         Button submitReviewButton = findViewById(R.id.submitReview);
 
@@ -31,7 +30,7 @@ public class ReviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (reviewText.getText().toString().isEmpty()) {
-
+                    Toast.makeText(ReviewActivity.this, "Please add text to your review", Toast.LENGTH_LONG).show();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ReviewActivity.this);
                     builder.setMessage("Ready to submit?");
@@ -57,7 +56,6 @@ public class ReviewActivity extends AppCompatActivity {
             }
         });
 
-//         TODO : add text upon rating change
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float v, boolean b) {
