@@ -101,6 +101,7 @@
                             style="@android:style/Widget.DeviceDefault.Light.RatingBar.Small"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
                             android:isIndicator="true"
                             android:numStars="5"
                             android:stepSize="1"
@@ -110,11 +111,8 @@
                             android:id="@+id/alerts"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginLeft="10sp"
-                            android:text="Alert"
                             android:textSize="20sp"
-                            tools:ignore="RtlCompat" />
+                            android:background="@drawable/shapeyellow"/>
 
                     </LinearLayout>
 
