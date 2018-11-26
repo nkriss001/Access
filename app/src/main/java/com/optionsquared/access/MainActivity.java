@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, ReviewActivity.class);
-                startActivityForResult(i, REVIEW_REQUEST);
-                // TODO: send location name through intent
+                i.putExtra("location", selectedLoc);
+                startActivity(i);
             }
         });
 
@@ -95,16 +95,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REVIEW_REQUEST) {
-            if (resultCode == RESULT_OK) {
-                Review review = (Review) data.getSerializableExtra("review");
-                // do something with the review data
-            }
-        }
-    }
 
     public int pxToDp(int px) {
 
