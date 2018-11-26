@@ -51,9 +51,10 @@ public class ReviewActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             long currentTime = Calendar.getInstance().getTimeInMillis();
-                            Review review = new Review((int)ratingBar.getRating(), reviewText.toString(), currentTime, name.toString(), true, 0);
+                            Review review = new Review((int)ratingBar.getRating(), reviewText.getText().toString(), currentTime, name.getText().toString(), true, 0);
                             SerialPlace location = (SerialPlace) getIntent().getSerializableExtra("location");
                             location.addReview(review);
+                            onBackPressed();
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
