@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     PlaceAutocompleteFragment placeAutoComplete;
     private final String APIKEY = "AIzaSyBbkrnKO95otvPVdAYWwNGCa2Sxx6Vcxik";
-    static int REVIEW_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Intent i = new Intent(MainActivity.this, ReportIssueActivity.class);
                 i.putExtra("location", selectedLoc);
                 startActivity(i);
-                // TODO: send location name through intent
             }
         });
 

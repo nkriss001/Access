@@ -47,9 +47,9 @@ public class ReportIssueActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             long currentTime = Calendar.getInstance().getTimeInMillis();
-                            Review review = new Review(0, issueText.toString(), currentTime, name.toString(), false, 0);
+                            Review issue = new Review(0, issueText.toString(), currentTime, name.toString(), false, 0);
                             SerialPlace location = (SerialPlace) getIntent().getSerializableExtra("location");
-                            location.addReview(review);
+                            location.addReview(issue);
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
