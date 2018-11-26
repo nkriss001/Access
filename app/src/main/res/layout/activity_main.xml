@@ -7,183 +7,154 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
+    <com.sothree.slidinguppanel.SlidingUpPanelLayout
+        xmlns:sothree="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/sliding_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:weightSum="1"
-        tools:context=".MainActivity">
+        android:gravity="bottom"
+        sothree:umanoPanelHeight="230dp"
+        sothree:umanoShadowHeight="4dp"
+        sothree:umanoOverlay="true"
+        sothree:umanoScrollableView="@+id/recycler"
+        >
 
-        <fragment
-            android:id="@+id/place_autocomplete"
-            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <fragment
-            android:id="@+id/map"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".MainActivity" />
+            android:gravity="center"
+            android:orientation="vertical"
+            tools:context=".MainActivity">
 
-    </LinearLayout>
+            <fragment
+                android:id="@+id/place_autocomplete"
+                android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:id="@+id/results"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="450dp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".MainActivity" />
+        </LinearLayout>
 
-        <ImageButton
-            android:id="@+id/arrow"
-            android:layout_width="30sp"
-            android:layout_height="30sp"
-            android:background="@android:color/transparent"
-            app:srcCompat="@android:drawable/arrow_up_float" />
-
-        <android.support.v7.widget.CardView
-            android:id="@+id/card"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            app:cardCornerRadius="10dp"
-            app:cardElevation="0dp"
-            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/linearLayout">
+            android:background="#ffffff"
+            android:orientation="vertical"
+            android:clickable="true"
+            android:focusable="false"
+            android:id="@+id/card">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="0"
+                android:orientation="horizontal"
+                >
+                <ImageView
+                    android:id="@+id/locationImage"
+                    android:layout_width="175dp"
+                    android:layout_height="175dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_horizontal"
+                    android:src="@drawable/dwinelle"
+                    app:srcCompat="@drawable/common_full_open_on_phone" />
+                <LinearLayout
+                    android:layout_width="300sp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10sp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="181dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingBottom="10sp"
+                        android:paddingTop="10sp"
+                        android:text="NAME"
+                        android:textAlignment="center"
+                        android:textSize="30sp" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="124dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <RatingBar
+                            android:id="@+id/rating"
+                            style="@android:style/Widget.DeviceDefault.RatingBar.Indicator"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:theme="@style/RatingBar"
+                            android:max="5"
+                            android:numStars="5" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/alerts"
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:paddingRight="20sp"
+                        android:text="Alert"
+                        android:textAlignment="textEnd"
+                        android:textSize="20sp"
+                        tools:ignore="RtlCompat" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_weight="0"
-                    android:background="@android:color/white"
                     android:orientation="horizontal"
-                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
-
-                    <ImageView
-                        android:id="@+id/locationImage"
-                        android:layout_width="175dp"
-                        android:layout_height="175dp"
+                    android:paddingBottom="10sp"
+                    android:paddingLeft="5sp"
+                    android:paddingRight="5sp"
+                    android:paddingTop="10sp">
+                    <Button
+                        android:id="@+id/reviewButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="75sp"
                         android:layout_weight="1"
-                        android:src="@drawable/dwinelle"
-                        app:srcCompat="@drawable/common_full_open_on_phone" />
-
-                    <LinearLayout
-                        android:layout_width="300sp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10sp"
+                        android:paddingBottom="10sp"
+                        android:paddingTop="10sp"
+                        android:text="Write Review"
+                        android:textSize="20sp" />
+                    <Button
+                        android:id="@+id/issueButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="75sp"
                         android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/reviewerName"
-                            android:layout_width="181dp"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:paddingBottom="10sp"
-                            android:paddingTop="10sp"
-                            android:text="NAME"
-                            android:textAlignment="center"
-                            android:textSize="30sp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="124dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
-
-                                <RatingBar
-                                    android:id="@+id/rating"
-                                    style="@android:style/Widget.DeviceDefault.RatingBar.Indicator"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:max="5"
-                                    android:numStars="5" />
-                            </LinearLayout>
-
-                            <TextView
-                                android:id="@+id/alerts"
-                                android:layout_width="2dp"
-                                android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:gravity="center"
-                                android:paddingRight="20sp"
-                                android:text="Alert"
-                                android:textAlignment="textEnd"
-                                android:textSize="20sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:paddingBottom="10sp"
-                            android:paddingLeft="5sp"
-                            android:paddingRight="5sp"
-                            android:paddingTop="10sp">
-
-                            <Button
-                                android:id="@+id/reviewButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="75sp"
-                                android:layout_weight="1"
-                                android:paddingBottom="10sp"
-                                android:paddingTop="10sp"
-                                android:text="Write Review"
-                                android:textSize="20sp" />
-
-                            <Button
-                                android:id="@+id/issueButton"
-                                android:layout_width="wrap_content"
-                                android:layout_height="75sp"
-                                android:layout_weight="1"
-                                android:paddingBottom="10sp"
-                                android:paddingTop="10sp"
-                                android:text="Add Issue"
-                                android:textSize="20sp" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-
+                        android:paddingBottom="10sp"
+                        android:paddingTop="10sp"
+                        android:text="Add Issue"
+                        android:textSize="20sp" />
                 </LinearLayout>
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/recycler"
-                    android:layout_width="match_parent"
-                    android:layout_height="115dp"
-                    android:layout_weight="1"
-                    android:background="@color/white"
-                    android:paddingTop="5dp">
-
-                </android.support.v7.widget.RecyclerView>
-
             </LinearLayout>
-        </android.support.v7.widget.CardView>
 
+        </LinearLayout>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center|top"
+            android:scrollbars="vertical">
+        </android.support.v7.widget.RecyclerView>
     </LinearLayout>
-
+    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 </android.support.constraint.ConstraintLayout>
