@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private GoogleMap mMap;
     PlaceAutocompleteFragment placeAutoComplete;
     private final String APIKEY = "AIzaSyBbkrnKO95otvPVdAYWwNGCa2Sxx6Vcxik";
+    static int REVIEW_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,7 +95,18 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REVIEW_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Review review = (Review) data.getSerializableExtra("review");
+                selectedLoc.addReview(review);
+                ref.child("places").child(selectedLoc.key).setValue(selectedLoc);
+                getPlace(selectedLoc.key);
+            }
+        }
+    }
 
     private void initMap() {
 
@@ -223,10 +235,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final LinearLayoutManager manager =
                             new LinearLayoutManager(
                                     getApplicationContext());
-
+                    ArrayList<Review> outputs = new ArrayList<>();
                     issues = selectedLoc.issues;
-                    issues.addAll(selectedLoc.reviews);
-                    ReviewAdapter r = new ReviewAdapter(issues);
+                    ArrayList<Review> reviews = selectedLoc.reviews;
+                    outputs.addAll(issues);
+                    outputs.addAll(reviews);
+                    ReviewAdapter r = new ReviewAdapter(outputs);
                     recyclerView.setAdapter(r);
                     recyclerView.setLayoutManager(manager);
 

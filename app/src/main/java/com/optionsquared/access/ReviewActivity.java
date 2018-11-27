@@ -1,6 +1,7 @@
 package com.optionsquared.access;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,12 +15,21 @@ import android.widget.Toast;
 
 import java.util.Calendar;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Calendar;
+
 public class ReviewActivity extends AppCompatActivity {
+    FirebaseDatabase database;
+    DatabaseReference ref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
+        this.database = FirebaseDatabase.getInstance();
+        ref = database.getReference();
 
         final RatingBar ratingBar = findViewById(R.id.ratingBar);
         final EditText reviewText = findViewById(R.id.reviewText);
@@ -52,11 +62,21 @@ public class ReviewActivity extends AppCompatActivity {
                     builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            long currentTime = Calendar.getInstance().getTimeInMillis();
-                            Review review = new Review((int)ratingBar.getRating(), reviewText.getText().toString(), currentTime, name.getText().toString(), true, 0);
+                            int rating = (int) ratingBar.getRating();
+                            String text = reviewText.getText().toString();
+                            // TODO : decide on time and username formats
+//                             alternatively: long time = Calendar.getInstance().getTimeInMillis();
+                            long time = Calendar.getInstance().HOUR;
+                            Review review = new Review(rating, text, time, name.getText().toString(), true, 0);
+                            /*
                             SerialPlace location = (SerialPlace) getIntent().getSerializableExtra("location");
                             location.addReview(review);
                             onBackPressed();
+                            */
+                            Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
+                            intent.putExtra("review", review);
+                            setResult(RESULT_OK, intent);
+                            finish();
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -99,3 +119,4 @@ public class ReviewActivity extends AppCompatActivity {
         });
     }
 }
+
