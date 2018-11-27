@@ -1,6 +1,7 @@
 package com.optionsquared.access;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,11 +49,15 @@ public class ReportIssueActivity extends AppCompatActivity {
                     builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            long currentTime = Calendar.getInstance().getTimeInMillis();
-                            Review issue = new Review(0, issueText.getText().toString(), currentTime, name.getText().toString(), false, 0);
-                            SerialPlace location = (SerialPlace) getIntent().getSerializableExtra("location");
-                            location.addReview(issue);
-                            onBackPressed();
+                            long time = Calendar.getInstance().HOUR;
+//                            long currentTime = Calendar.getInstance().getTimeInMillis();
+                            String text = issueText.getText().toString();
+                            Review issue = new Review(0, text, time, name.getText().toString(), false, 0);
+//                            SerialPlace location = (SerialPlace) getIntent().getSerializableExtra("location");
+                            Intent intent = new Intent(ReportIssueActivity.this, MainActivity.class);
+                            intent.putExtra("issue", issue);
+                            setResult(RESULT_OK, intent);
+                            finish();
                         }
                     });
                     builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

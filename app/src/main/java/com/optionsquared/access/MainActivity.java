@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     PlaceAutocompleteFragment placeAutoComplete;
     private final String APIKEY = "AIzaSyBbkrnKO95otvPVdAYWwNGCa2Sxx6Vcxik";
     static int REVIEW_REQUEST = 1;
+    static int ISSUE_REQUEST = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, ReportIssueActivity.class);
                 i.putExtra("location", selectedLoc);
-                startActivity(i);
+                startActivityForResult(i, ISSUE_REQUEST);
             }
         });
 
@@ -102,6 +103,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (resultCode == RESULT_OK) {
                 Review review = (Review) data.getSerializableExtra("review");
                 selectedLoc.addReview(review);
+                ref.child("places").child(selectedLoc.key).setValue(selectedLoc);
+                getPlace(selectedLoc.key);
+            }
+        } else if (requestCode == ISSUE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                Review issue = (Review) data.getSerializableExtra("issue");
+                selectedLoc.addIssue(issue);
                 ref.child("places").child(selectedLoc.key).setValue(selectedLoc);
                 getPlace(selectedLoc.key);
             }
