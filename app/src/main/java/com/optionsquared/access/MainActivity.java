@@ -112,7 +112,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (requestCode == REVIEW_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Review review = (Review) data.getSerializableExtra("review");
-                // do something with the review data
+                selectedLoc.addReview(review);
+                ref.child("places").child(selectedLoc.key).setValue(selectedLoc);
+                getPlace(selectedLoc.key);
             }
         }
     }
@@ -245,10 +247,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final LinearLayoutManager manager =
                             new LinearLayoutManager(
                                     getApplicationContext());
-
+                    ArrayList<Review> outputs = new ArrayList<>();
                     issues = selectedLoc.issues;
-                    issues.addAll(selectedLoc.reviews);
-                    ReviewAdapter r = new ReviewAdapter(issues);
+                    ArrayList<Review> reviews = selectedLoc.reviews;
+                    outputs.addAll(issues);
+                    outputs.addAll(reviews);
+                    ReviewAdapter r = new ReviewAdapter(outputs);
                     recyclerView.setAdapter(r);
                     recyclerView.setLayoutManager(manager);
 

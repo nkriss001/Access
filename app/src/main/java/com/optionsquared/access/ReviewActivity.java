@@ -10,12 +10,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.Calendar;
+
 public class ReviewActivity extends AppCompatActivity {
+    FirebaseDatabase database;
+    DatabaseReference ref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review);
+        this.database = FirebaseDatabase.getInstance();
+        ref = database.getReference();
 
         final RatingBar ratingBar = findViewById(R.id.ratingBar);
         final EditText reviewText = findViewById(R.id.reviewText);
@@ -24,31 +33,35 @@ public class ReviewActivity extends AppCompatActivity {
         submitReviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (reviewText.getText().toString().isEmpty()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(ReviewActivity.this);
+                builder.setMessage("Ready to submit?");
+                builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // submit the review
+                        int rating = (int) ratingBar.getRating();
+                        String text = reviewText.getText().toString();
+                        // TODO : decide on time and username formats
+                        long time = Calendar.getInstance().HOUR;
+                        String name = "foo";
+                        boolean isReview = true;
+                        int votes = 0;
+                        Review review = new Review(rating, text, time, name, isReview, votes);
+                        Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
+                        intent.putExtra("review", review);
+                        setResult(RESULT_OK, intent);
+                        finish();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ReviewActivity.this);
-                    builder.setMessage("Ready to submit?");
-                    builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            // submit the review
-                            Review review = new Review(ratingBar.getNumStars(), reviewText.toString());
-                            Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
-                            intent.putExtra("review", review);
-                            setResult(RESULT_OK, intent);
-                        }
-                    });
-                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
+                    }
+                });
 
-                        }
-                    });
-
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
-                }
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         });
 
