@@ -68,11 +68,7 @@ public class ReviewActivity extends AppCompatActivity {
 //                             alternatively: long time = Calendar.getInstance().getTimeInMillis();
                             long time = Calendar.getInstance().HOUR;
                             Review review = new Review(rating, text, time, name.getText().toString(), true, 0);
-                            /*
-                            SerialPlace location = (SerialPlace) getIntent().getSerializableExtra("location");
-                            location.addReview(review);
-                            onBackPressed();
-                            */
+//                            SerialPlace location = (SerialPlace) getIntent().getSerializableExtra("location");
                             Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
                             intent.putExtra("review", review);
                             setResult(RESULT_OK, intent);

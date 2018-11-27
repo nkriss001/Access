@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, ReviewActivity.class);
                 i.putExtra("location", selectedLoc);
-                startActivity(i);
+                startActivityForResult(i, REVIEW_REQUEST);
             }
         });
 
@@ -243,7 +243,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     ReviewAdapter r = new ReviewAdapter(outputs);
                     recyclerView.setAdapter(r);
                     recyclerView.setLayoutManager(manager);
-
 
                     mLayout.setScrollableView(recyclerView);
                 } else {
