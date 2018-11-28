@@ -10,6 +10,7 @@
         android:id="@+id/ratingBar"
         android:layout_width="235dp"
         android:layout_height="45dp"
+        android:max="5"
         android:numStars="5"
         android:scaleX=".7"
         android:scaleY=".7"
