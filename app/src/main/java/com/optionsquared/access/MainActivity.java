@@ -256,7 +256,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     mLayout.setScrollableView(recyclerView);
                 } else {
-<<<<<<< HEAD
                     SerialPlace newPlace = new SerialPlace(keyString);
                     ref.child("places").child(keyString).setValue(newPlace);
                     selectedLoc = newPlace;
@@ -291,10 +290,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     recyclerView.setLayoutManager(manager);
 
                     mLayout.setScrollableView(recyclerView);
-=======
-
-                    selectedLoc = null;
->>>>>>> bebd45bcab620700d8e18756135ea18864542ae0
                 }
             }
 
