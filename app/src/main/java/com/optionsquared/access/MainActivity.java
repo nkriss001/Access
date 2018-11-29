@@ -244,8 +244,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     final RecyclerView recyclerView = findViewById(R.id.recycler);
                     final LinearLayoutManager manager =
-                            new LinearLayoutManager(
-                                    getApplicationContext());
+                            new LinearLayoutManager(getApplicationContext());
                     ArrayList<Review> outputs = new ArrayList<>();
                     issues = selectedLoc.issues;
                     ArrayList<Review> reviews = selectedLoc.reviews;
@@ -257,6 +256,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     mLayout.setScrollableView(recyclerView);
                 } else {
+<<<<<<< HEAD
                     SerialPlace newPlace = new SerialPlace(keyString);
                     ref.child("places").child(keyString).setValue(newPlace);
                     selectedLoc = newPlace;
@@ -291,6 +291,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     recyclerView.setLayoutManager(manager);
 
                     mLayout.setScrollableView(recyclerView);
+=======
+
+                    selectedLoc = null;
+>>>>>>> bebd45bcab620700d8e18756135ea18864542ae0
                 }
             }
 

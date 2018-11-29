@@ -25,6 +25,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
+import java.text.SimpleDateFormat;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -123,6 +124,9 @@ public class ReviewActivity extends AppCompatActivity {
                             String text = reviewText.getText().toString();
                             // TODO : decide on time and username formats
 //                             alternatively: long time = Calendar.getInstance().getTimeInMillis();
+                            // Calendar today = Calendar.getInstance();
+                            // SimpleDateFormat sdf = new SimpleDateFormat("MM/DD/YY");
+                            // String time = sdf.format(today.getTime());
                             long time = Calendar.getInstance().HOUR;
                             Review review = new Review(rating, text, time, name.getText().toString(), true, 0);
 //                            SerialPlace location = (SerialPlace) getIntent().getSerializableExtra("location");
