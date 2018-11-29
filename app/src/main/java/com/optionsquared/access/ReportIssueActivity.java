@@ -2,6 +2,7 @@ package com.optionsquared.access;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,7 +45,7 @@ public class ReportIssueActivity extends AppCompatActivity {
                 } else if (name.getText().toString().isEmpty()) {
                     Toast.makeText(ReportIssueActivity.this, "Please include your name", Toast.LENGTH_LONG).show();
                 } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ReportIssueActivity.this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(ReportIssueActivity.this, R.style.AlertDialog);
                     builder.setMessage("Ready to submit?");
                     builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                         @Override

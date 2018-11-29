@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.database = FirebaseDatabase.getInstance();
+        database.setPersistenceEnabled(true);
         ref = database.getReference();
 
         Button reviewButton = findViewById(R.id.reviewButton);
@@ -206,6 +207,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //foo.addIssue(bark);
 
         ref.child("places").child("Soda Hall").setValue(soda);
+        ref.child("places").child("Soda Hall").child("avgRating").setValue(5.0);
 
         selectedLoc = soda;
     }
@@ -215,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param key
      */
     void getPlace(String key) {
+        final String keyString = key;
         DatabaseReference placeRef = ref.child("places").child(key);
 
         ValueEventListener valueEventListener = new ValueEventListener() {
@@ -254,7 +257,40 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     mLayout.setScrollableView(recyclerView);
                 } else {
-                    selectedLoc = null;
+                    SerialPlace newPlace = new SerialPlace(keyString);
+                    ref.child("places").child(keyString).setValue(newPlace);
+                    selectedLoc = newPlace;
+
+                    final TextView name = findViewById(R.id.name);
+                    final TextView alerts = findViewById(R.id.alerts);
+                    final RatingBar rating = findViewById(R.id.rating);
+                    final ImageView imageView = findViewById(R.id.locationImage);
+                    SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+
+                    imageView.setImageResource(R.drawable.dwinelle);
+                    name.setText(selectedLoc.key);
+                    rating.setRating(selectedLoc.avgRating);
+                    ArrayList<Review> issues = selectedLoc.issues;
+                    if (issues.size() > 0) {
+                        alerts.setText(issues.size() + " Alerts!");
+                    } else {
+                        alerts.setText("No Alerts");
+                    }
+
+                    final RecyclerView recyclerView = findViewById(R.id.recycler);
+                    final LinearLayoutManager manager =
+                            new LinearLayoutManager(
+                                    getApplicationContext());
+                    ArrayList<Review> outputs = new ArrayList<>();
+                    issues = selectedLoc.issues;
+                    ArrayList<Review> reviews = selectedLoc.reviews;
+                    outputs.addAll(issues);
+                    outputs.addAll(reviews);
+                    ReviewAdapter r = new ReviewAdapter(outputs);
+                    recyclerView.setAdapter(r);
+                    recyclerView.setLayoutManager(manager);
+
+                    mLayout.setScrollableView(recyclerView);
                 }
             }
 
