@@ -241,8 +241,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     final RecyclerView recyclerView = findViewById(R.id.recycler);
                     final LinearLayoutManager manager =
-                            new LinearLayoutManager(
-                                    getApplicationContext());
+                            new LinearLayoutManager(getApplicationContext());
                     ArrayList<Review> outputs = new ArrayList<>();
                     issues = selectedLoc.issues;
                     ArrayList<Review> reviews = selectedLoc.reviews;
@@ -254,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     mLayout.setScrollableView(recyclerView);
                 } else {
+
                     selectedLoc = null;
                 }
             }

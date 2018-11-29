@@ -117,7 +117,7 @@
                             android:paddingTop="10dp"
                             android:text="Alert"
                             android:textAlignment="textEnd"
-                            android:textSize="15sp"
+                            android:textSize="18sp"
                             tools:ignore="RtlCompat"
                             tools:layout_editor_absoluteX="165dp"
                             tools:layout_editor_absoluteY="484dp" />

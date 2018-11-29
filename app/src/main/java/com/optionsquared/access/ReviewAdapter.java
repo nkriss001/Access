@@ -62,6 +62,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewHold
             holder.sideBarColor.setBackgroundResource(R.drawable.ic_reviews_background);
         } else {
             holder.sideBarColor.setBackgroundResource(R.drawable.ic_issues_background);
+            holder.ratingBar.setVisibility(View.GONE);
         }
     }
 
