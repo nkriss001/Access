@@ -17,5 +17,8 @@
         <item name="android:textColorPrimary">#595959</item>
         <item name="android:colorAccent">#1b5e20</item>
     </style>
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+    </style>
 
 </resources>
