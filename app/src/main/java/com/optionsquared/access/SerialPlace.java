@@ -10,8 +10,10 @@ public class SerialPlace implements Serializable {
     public ArrayList<Review> issues;
     public long avgRating;
     public String key;
+    public String addr;
 
-    SerialPlace(String key) {
+    SerialPlace(String key, String addr) {
+        this.addr = addr;
         this.key = key;
         reviews = new ArrayList<>();
         issues = new ArrayList<>();
@@ -20,6 +22,7 @@ public class SerialPlace implements Serializable {
 
     SerialPlace(DataSnapshot dataSnapshot) {
         this.key = dataSnapshot.getKey();
+        this.addr = (String) dataSnapshot.child("addr").getValue();
         this.avgRating = (long) dataSnapshot.child("avgRating").getValue();
 
         reviews = new ArrayList<>();
