@@ -41,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -95,9 +96,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         final RecyclerView recyclerView = findViewById(R.id.recycler);
-        final LinearLayoutManager manager =
-                new LinearLayoutManager(
-                        this);
+        final LinearLayoutManager manager = new LinearLayoutManager(this);
 
     }
 
@@ -240,6 +239,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     name.setText(selectedLoc.key);
                     rating.setRating(selectedLoc.avgRating);
                     ArrayList<Review> issues = selectedLoc.issues;
+                    ArrayList<Review> removed = new ArrayList<>();
+                    long time = Calendar.getInstance().getTimeInMillis();
+                    for (Review issue : issues) {
+                        if (time - issue.time > (long) 8.64e+7) {
+                            removed.add(issue);
+                        }
+                    }
+                    issues.removeAll(removed);
                     if (issues.size() > 0) {
                         alerts.setText(issues.size() + " Alerts!");
                     } else {
@@ -284,6 +291,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final LinearLayoutManager manager =
                             new LinearLayoutManager(
                                     getApplicationContext());
+
                     ArrayList<Review> outputs = new ArrayList<>();
                     issues = selectedLoc.issues;
                     ArrayList<Review> reviews = selectedLoc.reviews;

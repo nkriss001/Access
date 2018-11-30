@@ -123,11 +123,10 @@ public class ReviewActivity extends AppCompatActivity {
                             int rating = (int) ratingBar.getRating();
                             String text = reviewText.getText().toString();
                             // TODO : decide on time and username formats
-//                             alternatively: long time = Calendar.getInstance().getTimeInMillis();
                             // Calendar today = Calendar.getInstance();
                             // SimpleDateFormat sdf = new SimpleDateFormat("MM/DD/YY");
                             // String time = sdf.format(today.getTime());
-                            long time = Calendar.getInstance().HOUR;
+                            long time = Calendar.getInstance().getTimeInMillis();
                             Review review = new Review(rating, text, time, name.getText().toString(), true, 0);
 //                            SerialPlace location = (SerialPlace) getIntent().getSerializableExtra("location");
                             Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
@@ -144,6 +143,7 @@ public class ReviewActivity extends AppCompatActivity {
                     });
 
                     AlertDialog dialog = builder.create();
+                    //dialog.getWindow().setLayout(400, 200);
                     dialog.show();
                 }
             }
