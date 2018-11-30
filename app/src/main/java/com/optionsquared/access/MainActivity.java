@@ -257,10 +257,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final RecyclerView recyclerView = findViewById(R.id.recycler);
                     final LinearLayoutManager manager =
                             new LinearLayoutManager(getApplicationContext());
-                    ArrayList<Review> outputs = new ArrayList<>();
+                    ArrayList<Object> outputs = new ArrayList<>();
                     issues = selectedLoc.issues;
                     ArrayList<Review> reviews = selectedLoc.reviews;
+                    if (!issues.isEmpty()) {
+                        outputs.add("Issues");
+                    }
                     outputs.addAll(issues);
+                    if (!reviews.isEmpty()) {
+                        outputs.add("Reviews");
+                    }
                     outputs.addAll(reviews);
                     ReviewAdapter r = new ReviewAdapter(outputs);
                     recyclerView.setAdapter(r);
@@ -293,10 +299,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             new LinearLayoutManager(
                                     getApplicationContext());
 
-                    ArrayList<Review> outputs = new ArrayList<>();
+                    ArrayList<Object> outputs = new ArrayList<>();
                     issues = selectedLoc.issues;
                     ArrayList<Review> reviews = selectedLoc.reviews;
+                    if (!issues.isEmpty()) {
+                        outputs.add("Issues");
+                    }
                     outputs.addAll(issues);
+                    if (!reviews.isEmpty()) {
+                        outputs.add("Reviews");
+                    }
                     outputs.addAll(reviews);
                     ReviewAdapter r = new ReviewAdapter(outputs);
                     recyclerView.setAdapter(r);

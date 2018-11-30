@@ -14,9 +14,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
 
-public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewHolder> {
+public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    ArrayList<Review> reviews;
+    ArrayList<Object> reviews;
+    static final boolean issueHeader = false;
+    static final boolean reviewHeader = false;
+    static final int TYPE_HEADER = 0;
+    static final int TYPE_ITEM = 1;
 
     public static class ReviewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
@@ -43,65 +47,84 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewHold
         }
     }
 
+    public class HeaderViewHolder extends RecyclerView.ViewHolder{
+        public TextView headerTitle;
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+            headerTitle = (TextView)itemView.findViewById(R.id.header_id);
+        }
+    }
+
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ReviewAdapter(ArrayList<Review> reviews) {
+    public ReviewAdapter(ArrayList<Object> reviews) {
         this.reviews = reviews;
     }
 
     // Create new views (invoked by the layout manager)
     @Override
-    public ReviewAdapter.ReviewHolder onCreateViewHolder(ViewGroup parent,
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                      int viewType) {
-
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.review_item, parent, false);
-
-        ReviewHolder vh = new ReviewHolder(v);
-
-        return vh;
+        if (viewType == TYPE_HEADER) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.header, parent, false);
+            return new HeaderViewHolder(v);
+        } else if (viewType == TYPE_ITEM) {
+            View v = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.review_item, parent, false);
+            return new ReviewHolder(v);
+        }
+        throw new RuntimeException("No match for " + viewType + ".");
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ReviewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        final Review curr = reviews.get(position);
-        holder.name.setText(curr.name);
-        holder.review.setText(curr.text);
-        holder.ratingBar.setRating(curr.rating);
-        Calendar currentDate = Calendar.getInstance();
-        currentDate.setTimeInMillis(curr.time);
-        SimpleDateFormat sdf = new SimpleDateFormat("h:mm a MM/dd/YYYY");
-        holder.date.setText(sdf.format(curr.time));
+        final Object curr = reviews.get(position);
+        if (holder instanceof HeaderViewHolder) {
+            ((HeaderViewHolder) holder).headerTitle.setText((String) curr);
+        } else if (holder instanceof ReviewHolder) {
+            ReviewHolder reviewHolder = (ReviewHolder) holder;
+            final Review review = (Review) curr;
+            reviewHolder.name.setText(review.name);
+            reviewHolder.review.setText(review.text);
+            reviewHolder.ratingBar.setRating(review.rating);
+            Calendar currentDate = Calendar.getInstance();
+            currentDate.setTimeInMillis(review.time);
+            SimpleDateFormat sdf = new SimpleDateFormat("h:mm a MM/dd/YYYY");
+            reviewHolder.date.setText(sdf.format(review.time));
 
-        final TextView score = holder.score;
-        displayVotes(score, curr);
+            final TextView score = reviewHolder.score;
+            displayVotes(score, review);
 
-        holder.upvote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                curr.votes += 1;
-                displayVotes(score, curr);
-                if (!(curr.isReview)) {
-                    curr.time = Calendar.getInstance().getTimeInMillis();
+            reviewHolder.upvote.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    review.votes += 1;
+                    displayVotes(score, review);
+                    if (!(review.isReview)) {
+                        review.time = Calendar.getInstance().getTimeInMillis();
+                    }
                 }
-            }
-        });
+            });
 
-        holder.downvote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                curr.votes -= 1;
-                displayVotes(score, curr);
-            }
-        });
+            reviewHolder.downvote.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    review.votes -= 1;
+                    displayVotes(score, review);
+                }
+            });
 
-        if(curr.isReview) {
-            holder.sideBarColor.setBackgroundResource(R.drawable.ic_reviews_background);
-        } else {
-            holder.sideBarColor.setBackgroundResource(R.drawable.ic_issues_background);
-            holder.ratingBar.setVisibility(View.GONE);
+            if(review.isReview) {
+                reviewHolder.sideBarColor.setBackgroundResource(R.drawable.ic_reviews_background);
+            } else {
+                reviewHolder.sideBarColor.setBackgroundResource(R.drawable.ic_issues_background);
+                reviewHolder.ratingBar.setVisibility(View.GONE);
+            }
         }
+
+
 
 
     }
@@ -110,6 +133,14 @@ public class ReviewAdapter extends RecyclerView.Adapter<ReviewAdapter.ReviewHold
     @Override
     public int getItemCount() {
         return reviews.size();
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (reviews.get(position) instanceof Review) {
+            return TYPE_ITEM;
+        }
+        return TYPE_HEADER;
     }
 
     // Display the number of votes for a review
