@@ -110,11 +110,12 @@ public class ReviewActivity extends AppCompatActivity {
         submitReviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (reviewText.getText().toString().isEmpty()) {
-                    Toast.makeText(ReviewActivity.this, "Please add text to your review", Toast.LENGTH_LONG).show();
-                } else if (name.getText().toString().isEmpty()) {
-                    name.setError("First name is required");
+                if (name.getText().toString().isEmpty()) {
+                    name.setError("Name is required");
                     Toast.makeText(ReviewActivity.this, "Please include your name", Toast.LENGTH_LONG).show();
+                } else if (reviewText.getText().toString().isEmpty()) {
+                    reviewText.setError("You must write something to submit a review");
+                    Toast.makeText(ReviewActivity.this, "Please add text to your review", Toast.LENGTH_LONG).show();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ReviewActivity.this, R.style.AlertDialog);
                     builder.setMessage("Ready to submit?");

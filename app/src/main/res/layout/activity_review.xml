@@ -53,23 +53,27 @@
 
     <EditText
         android:id="@+id/reviewText"
-        android:layout_width="301dp"
-        android:layout_height="171dp"
-        android:layout_marginTop="32dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="30dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/shape_textborder"
         android:ems="10"
         android:gravity="top"
         android:hint="Tell us about your experience"
         android:inputType="textMultiLine"
         android:lines="5"
+        android:padding="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ratingBar" />
 
     <Button
         android:id="@+id/submitReview"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="38dp"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="120dp"
         android:layout_marginStart="120dp"
@@ -78,8 +82,10 @@
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageButton" />
+        app:layout_constraintTop_toBottomOf="@+id/imageButton"
+        app:layout_constraintVertical_bias="0.125" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/reviewToolbar"
