@@ -240,6 +240,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         alerts.setText(issues.size() + " Alerts!");
                     } else {
                         alerts.setText("No Alerts");
+                        alerts.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                     }
 
                     final RecyclerView recyclerView = findViewById(R.id.recycler);
