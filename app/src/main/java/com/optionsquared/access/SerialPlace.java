@@ -1,5 +1,8 @@
 package com.optionsquared.access;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
+
 import com.google.firebase.database.DataSnapshot;
 
 import java.io.Serializable;
@@ -8,6 +11,7 @@ import java.util.ArrayList;
 public class SerialPlace implements Serializable {
     public ArrayList<Review> reviews;
     public ArrayList<Review> issues;
+    public ArrayList<Bitmap> images;
     public long avgRating;
     public String key;
     public String addr;
@@ -17,6 +21,7 @@ public class SerialPlace implements Serializable {
         this.key = key;
         reviews = new ArrayList<>();
         issues = new ArrayList<>();
+        images = new ArrayList<>();
         setRating();
     }
 
@@ -24,6 +29,7 @@ public class SerialPlace implements Serializable {
         this.key = dataSnapshot.getKey();
         this.addr = (String) dataSnapshot.child("addr").getValue();
         this.avgRating = (long) dataSnapshot.child("avgRating").getValue();
+        this.images = new ArrayList<>();
 
         reviews = new ArrayList<>();
         issues = new ArrayList<>();
@@ -66,6 +72,10 @@ public class SerialPlace implements Serializable {
             }
             this.avgRating = sum / reviews.size();
         }
+    }
+
+    public void addImage(Bitmap image) {
+        this.images.add(image);
     }
 
 }
