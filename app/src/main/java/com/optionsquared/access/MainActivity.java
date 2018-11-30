@@ -305,7 +305,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         placeRef.addListenerForSingleValueEvent(valueEventListener);
     }
-
 }
 
 

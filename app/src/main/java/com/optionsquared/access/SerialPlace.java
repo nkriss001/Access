@@ -1,7 +1,9 @@
 package com.optionsquared.access;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.util.Base64;
 
 import com.google.firebase.database.DataSnapshot;
 
@@ -46,6 +48,24 @@ public class SerialPlace implements Serializable {
         for (DataSnapshot issue : issues.getChildren()) {
             temp = new Review(issue);
             addIssue(temp);
+        }
+
+        DataSnapshot imageBitmaps = dataSnapshot.child("images");
+        for (DataSnapshot image : imageBitmaps.getChildren()) {
+            String imgTemp = image.toString();
+            addImage(stringToBitMap(imgTemp));
+        }
+    }
+
+
+    private Bitmap stringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
         }
     }
 
