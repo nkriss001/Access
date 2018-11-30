@@ -1,5 +1,10 @@
 package com.optionsquared.access;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.util.Base64;
+
 import com.google.firebase.database.DataSnapshot;
 
 import java.io.Serializable;
@@ -8,19 +13,25 @@ import java.util.ArrayList;
 public class SerialPlace implements Serializable {
     public ArrayList<Review> reviews;
     public ArrayList<Review> issues;
+    public ArrayList<String> images;
     public long avgRating;
     public String key;
+    public String addr;
 
-    SerialPlace(String key) {
+    SerialPlace(String key, String addr) {
+        this.addr = addr;
         this.key = key;
         reviews = new ArrayList<>();
         issues = new ArrayList<>();
+        images = new ArrayList<>();
         setRating();
     }
 
     SerialPlace(DataSnapshot dataSnapshot) {
         this.key = dataSnapshot.getKey();
+        this.addr = (String) dataSnapshot.child("addr").getValue();
         this.avgRating = (long) dataSnapshot.child("avgRating").getValue();
+        this.images = new ArrayList<>();
 
         reviews = new ArrayList<>();
         issues = new ArrayList<>();
@@ -37,6 +48,24 @@ public class SerialPlace implements Serializable {
         for (DataSnapshot issue : issues.getChildren()) {
             temp = new Review(issue);
             addIssue(temp);
+        }
+
+        DataSnapshot imageBitmaps = dataSnapshot.child("images");
+        for (DataSnapshot image : imageBitmaps.getChildren()) {
+            String imgTemp = image.toString();
+            addImage(imgTemp);
+        }
+    }
+
+
+    private Bitmap stringToBitMap(String encodedString){
+        try {
+            byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+            Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
+            return bitmap;
+        } catch(Exception e) {
+            e.getMessage();
+            return null;
         }
     }
 
@@ -63,6 +92,18 @@ public class SerialPlace implements Serializable {
             }
             this.avgRating = sum / reviews.size();
         }
+    }
+
+    public void addImage(String image) {
+        this.images.add(image);
+    }
+
+    public ArrayList<Bitmap> getImageBitmaps() {
+        ArrayList<Bitmap> bms = new ArrayList<>();
+        for (String i : this.images) {
+            bms.add(stringToBitMap(i));
+        }
+        return bms;
     }
 
 }
