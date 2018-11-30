@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class SerialPlace implements Serializable {
     public ArrayList<Review> reviews;
     public ArrayList<Review> issues;
-    public ArrayList<Bitmap> images;
+    public ArrayList<String> images;
     public long avgRating;
     public String key;
     public String addr;
@@ -53,7 +53,7 @@ public class SerialPlace implements Serializable {
         DataSnapshot imageBitmaps = dataSnapshot.child("images");
         for (DataSnapshot image : imageBitmaps.getChildren()) {
             String imgTemp = image.toString();
-            addImage(stringToBitMap(imgTemp));
+            addImage(imgTemp);
         }
     }
 
@@ -94,8 +94,16 @@ public class SerialPlace implements Serializable {
         }
     }
 
-    public void addImage(Bitmap image) {
+    public void addImage(String image) {
         this.images.add(image);
+    }
+
+    public ArrayList<Bitmap> getImageBitmaps() {
+        ArrayList<Bitmap> bms = new ArrayList<>();
+        for (String i : this.images) {
+            bms.add(stringToBitMap(i));
+        }
+        return bms;
     }
 
 }
