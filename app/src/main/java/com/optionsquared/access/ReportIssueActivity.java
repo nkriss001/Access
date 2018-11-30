@@ -50,8 +50,7 @@ public class ReportIssueActivity extends AppCompatActivity {
                     builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            long time = Calendar.getInstance().HOUR;
-//                            long currentTime = Calendar.getInstance().getTimeInMillis();
+                            long time = Calendar.getInstance().getTimeInMillis();
                             String text = issueText.getText().toString();
                             Review issue = new Review(0, text, time, name.getText().toString(), false, 0);
 //                            SerialPlace location = (SerialPlace) getIntent().getSerializableExtra("location");

@@ -36,13 +36,18 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.firebase.database.core.Repo;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     FirebaseDatabase database;
+    FirebaseStorage storage;
+    StorageReference storageReference;
     DatabaseReference ref;
     SerialPlace selectedLoc = null;
     private GoogleMap mMap;
@@ -64,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         createDummyPlace();
 
-        getPlace("foo");
+        getPlace("foo", "addr");
         initMap();
 
         reviewButton.setOnClickListener(new View.OnClickListener() {
@@ -91,9 +96,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         final RecyclerView recyclerView = findViewById(R.id.recycler);
-        final LinearLayoutManager manager =
-                new LinearLayoutManager(
-                        this);
+        final LinearLayoutManager manager = new LinearLayoutManager(this);
 
     }
 
@@ -105,14 +108,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Review review = (Review) data.getSerializableExtra("review");
                 selectedLoc.addReview(review);
                 ref.child("places").child(selectedLoc.key).setValue(selectedLoc);
-                getPlace(selectedLoc.key);
+                getPlace(selectedLoc.key, selectedLoc.addr);
             }
         } else if (requestCode == ISSUE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Review issue = (Review) data.getSerializableExtra("issue");
                 selectedLoc.addIssue(issue);
                 ref.child("places").child(selectedLoc.key).setValue(selectedLoc);
-                getPlace(selectedLoc.key);
+                getPlace(selectedLoc.key, selectedLoc.addr);
             }
         }
     }
@@ -128,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onPlaceSelected(Place place) {
                 addMarker(place);
-                getPlace((String) place.getName());
+                getPlace((String) place.getName(), place.getAddress().toString());
             }
 
             @Override
@@ -178,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     void createDummyPlace() {
-        SerialPlace foo = new SerialPlace("Dwinelle Hall");
+        SerialPlace foo = new SerialPlace("Dwinelle Hall", "address");
 
         Review bar = new Review(3, "Dwinelle is unpredictable in terms of elevators working.", (long) 4.20, "Oski", true, 0);
         Review baz = new Review(1, "The elevator is always broken and the layout is confusing.", (long) 4.20, "Dirks", true, 0);
@@ -195,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         ref.child("places").child("Dwinelle Hall").setValue(foo);
 
-        SerialPlace soda = new SerialPlace("Soda Hall");
+        SerialPlace soda = new SerialPlace("Soda Hall", "address 2");
 
         Review b5 = new Review(5, "Soda's super easy to navigate.", (long) 4.20, "Alice", true, 0);
         Review b6 = new Review(4, "The elevator is always available", (long) 4.20, "Bob", true, 0);
@@ -216,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * exists, saves that info in selectedLoc or null if it doesn't exist.
      * @param key
      */
-    void getPlace(String key) {
+    void getPlace(String key, final String addr) {
         final String keyString = key;
         DatabaseReference placeRef = ref.child("places").child(key);
 
@@ -236,6 +239,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     name.setText(selectedLoc.key);
                     rating.setRating(selectedLoc.avgRating);
                     ArrayList<Review> issues = selectedLoc.issues;
+                    ArrayList<Review> removed = new ArrayList<>();
+                    long time = Calendar.getInstance().getTimeInMillis();
+                    for (Review issue : issues) {
+                        if (time - issue.time > (long) 8.64e+7) {
+                            removed.add(issue);
+                        }
+                    }
+                    issues.removeAll(removed);
                     if (issues.size() > 0) {
                         alerts.setText(issues.size() + " Alerts!");
                     } else {
@@ -257,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     mLayout.setScrollableView(recyclerView);
                 } else {
-                    SerialPlace newPlace = new SerialPlace(keyString);
+                    SerialPlace newPlace = new SerialPlace(keyString, addr);
                     ref.child("places").child(keyString).setValue(newPlace);
                     selectedLoc = newPlace;
 
@@ -281,6 +292,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final LinearLayoutManager manager =
                             new LinearLayoutManager(
                                     getApplicationContext());
+
                     ArrayList<Review> outputs = new ArrayList<>();
                     issues = selectedLoc.issues;
                     ArrayList<Review> reviews = selectedLoc.reviews;
@@ -302,7 +314,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         placeRef.addListenerForSingleValueEvent(valueEventListener);
     }
-
 }
 
 
