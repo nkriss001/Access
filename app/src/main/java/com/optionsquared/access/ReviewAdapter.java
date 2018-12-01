@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public TextView score;
         public ImageButton upvote;
         public ImageButton downvote;
+        public LinearLayout votingLayout;
         public TextView date;
 
         public ReviewHolder(View v) {
@@ -42,6 +44,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             score = v.findViewById(R.id.score);
             upvote = v.findViewById(R.id.upvote);
             downvote = v.findViewById(R.id.downvote);
+            votingLayout = v.findViewById(R.id.votingLayout);
             date = v.findViewById(R.id.date);
 
         }
@@ -118,9 +121,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             if(review.isReview) {
                 reviewHolder.sideBarColor.setBackgroundResource(R.drawable.ic_reviews_background);
-                reviewHolder.upvote.setVisibility(View.INVISIBLE);
-                reviewHolder.downvote.setVisibility(View.INVISIBLE);
-                reviewHolder.score.setVisibility(View.INVISIBLE);
+                reviewHolder.votingLayout.setVisibility(View.GONE);
             } else {
                 reviewHolder.sideBarColor.setBackgroundResource(R.drawable.ic_issues_background);
                 reviewHolder.ratingBar.setVisibility(View.GONE);
