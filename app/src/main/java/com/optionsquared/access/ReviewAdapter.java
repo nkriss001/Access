@@ -118,6 +118,9 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
             if(review.isReview) {
                 reviewHolder.sideBarColor.setBackgroundResource(R.drawable.ic_reviews_background);
+                reviewHolder.upvote.setVisibility(View.INVISIBLE);
+                reviewHolder.downvote.setVisibility(View.INVISIBLE);
+                reviewHolder.score.setVisibility(View.INVISIBLE);
             } else {
                 reviewHolder.sideBarColor.setBackgroundResource(R.drawable.ic_issues_background);
                 reviewHolder.ratingBar.setVisibility(View.GONE);
