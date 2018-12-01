@@ -11,6 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.firebase.database.DatabaseReference;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.text.SimpleDateFormat;
@@ -18,6 +20,8 @@ import java.text.SimpleDateFormat;
 public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     ArrayList<Object> reviews;
+    SerialPlace selectedLoc;
+    DatabaseReference ref;
     static final boolean issueHeader = false;
     static final boolean reviewHeader = false;
     static final int TYPE_HEADER = 0;
@@ -59,7 +63,10 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ReviewAdapter(ArrayList<Object> reviews) {
+    public ReviewAdapter(ArrayList<Object> reviews, SerialPlace selectedLoc,
+                         DatabaseReference ref) {
+        this.selectedLoc = selectedLoc;
+        this.ref = ref;
         this.reviews = reviews;
     }
 
@@ -108,6 +115,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     if (!(review.isReview)) {
                         review.time = Calendar.getInstance().getTimeInMillis();
                     }
+                    ref.child("places").child(selectedLoc.key).setValue(selectedLoc);
                 }
             });
 
@@ -116,6 +124,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 public void onClick(View view) {
                     review.votes -= 1;
                     displayVotes(score, review);
+                    ref.child("places").child(selectedLoc.key).setValue(selectedLoc);
                 }
             });
 

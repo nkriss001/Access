@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final String APIKEY = "AIzaSyBbkrnKO95otvPVdAYWwNGCa2Sxx6Vcxik";
     static int REVIEW_REQUEST = 1;
     static int ISSUE_REQUEST = 2;
+    LinearLayout card;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,13 +65,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         this.database = FirebaseDatabase.getInstance();
         database.setPersistenceEnabled(true);
         ref = database.getReference();
+        card = findViewById(R.id.card);
 
         Button reviewButton = findViewById(R.id.reviewButton);
         Button issueButton = findViewById(R.id.issueButton);
 
-        createDummyPlace();
-
-        getPlace("foo", "addr");
         initMap();
 
         reviewButton.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initMap() {
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
 
     }
 
@@ -181,41 +182,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
-    void createDummyPlace() {
-        SerialPlace foo = new SerialPlace("Dwinelle Hall", "address");
-
-        Review bar = new Review(3, "Dwinelle is unpredictable in terms of elevators working.", (long) 4.20, "Oski", true, 0);
-        Review baz = new Review(1, "The elevator is always broken and the layout is confusing.", (long) 4.20, "Dirks", true, 0);
-        Review b3 = new Review(3, "Dwinelle is unpredictable in terms of elevators working.", (long) 4.20, "Oski", true, 0);
-        Review b4 = new Review(1, "The elevator is always broken and the layout is confusing.", (long) 4.20, "Dirks", true, 0);
-
-        Review bork = new Review(1, "The elevator is down!", (long) 4.20, "Carol Christ", false, 0);
-
-        foo.addReview(b3);
-        foo.addReview(b4);
-        foo.addReview(bar);
-        foo.addReview(baz);
-        foo.addIssue(bork);
-
-        ref.child("places").child("Dwinelle Hall").setValue(foo);
-
-        SerialPlace soda = new SerialPlace("Soda Hall", "address 2");
-
-        Review b5 = new Review(5, "Soda's super easy to navigate.", (long) 4.20, "Alice", true, 0);
-        Review b6 = new Review(4, "The elevator is always available", (long) 4.20, "Bob", true, 0);
-
-        //Review bark = new Review(1, "The elevator is down!", (long) 4.20, "Carol Christ", false, 0);
-
-        soda.addReview(b5);
-        soda.addReview(b6);
-        //foo.addIssue(bark);
-
-        ref.child("places").child("Soda Hall").setValue(soda);
-        ref.child("places").child("Soda Hall").child("avgRating").setValue(5.0);
-
-        selectedLoc = soda;
-    }
-
     /** Retrieves the SerialPlace information from the realtime database if it
      * exists, saves that info in selectedLoc or null if it doesn't exist.
      * @param key
@@ -235,7 +201,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final RatingBar rating = findViewById(R.id.rating);
                     final ImageView imageView = findViewById(R.id.locationImage);
                     SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-
                     imageView.setImageResource(R.drawable.dwinelle);
                     name.setText(selectedLoc.key);
                     rating.setRating(selectedLoc.avgRating);
@@ -271,7 +236,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         outputs.add("Reviews");
                     }
                     outputs.addAll(reviews);
-                    ReviewAdapter r = new ReviewAdapter(outputs);
+                    ReviewAdapter r = new ReviewAdapter(outputs, selectedLoc, ref);
                     recyclerView.setAdapter(r);
                     recyclerView.setLayoutManager(manager);
 
@@ -313,7 +278,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                         outputs.add("Reviews");
                     }
                     outputs.addAll(reviews);
-                    ReviewAdapter r = new ReviewAdapter(outputs);
+                    ReviewAdapter r = new ReviewAdapter(outputs, selectedLoc, ref);
                     recyclerView.setAdapter(r);
                     recyclerView.setLayoutManager(manager);
 
