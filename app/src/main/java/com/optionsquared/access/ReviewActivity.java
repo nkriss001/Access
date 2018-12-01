@@ -111,11 +111,11 @@ public class ReviewActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (name.getText().toString().isEmpty()) {
-                    name.setError("Name is required");
                     Toast.makeText(ReviewActivity.this, "Please include your name", Toast.LENGTH_LONG).show();
                 } else if (reviewText.getText().toString().isEmpty()) {
-                    reviewText.setError("You must write something to submit a review");
                     Toast.makeText(ReviewActivity.this, "Please add text to your review", Toast.LENGTH_LONG).show();
+                } else if (ratingBar.getRating() == 0) {
+                    Toast.makeText(ReviewActivity.this, "Please rate the location", Toast.LENGTH_LONG).show();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ReviewActivity.this, R.style.AlertDialog);
                     builder.setMessage("Ready to submit?");
@@ -169,7 +169,7 @@ public class ReviewActivity extends AppCompatActivity {
                         ratingText.setText("Great");
                         break;
                     case 5:
-                        ratingText.setText("Awesome");
+                        ratingText.setText("Awesome!");
                         break;
                     default:
                         ratingText.setText("");
