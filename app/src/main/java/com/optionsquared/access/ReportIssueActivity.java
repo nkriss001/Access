@@ -40,10 +40,10 @@ public class ReportIssueActivity extends AppCompatActivity {
         submitIssueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (issueText.getText().toString().isEmpty()) {
-                    Toast.makeText(ReportIssueActivity.this, "Please describe your issue", Toast.LENGTH_LONG).show();
-                } else if (name.getText().toString().isEmpty()) {
+                if (name.getText().toString().isEmpty()) {
                     Toast.makeText(ReportIssueActivity.this, "Please include your name", Toast.LENGTH_LONG).show();
+                } else if (issueText.getText().toString().isEmpty()) {
+                    Toast.makeText(ReportIssueActivity.this, "Please describe the issue", Toast.LENGTH_LONG).show();
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(ReportIssueActivity.this, R.style.AlertDialog);
                     builder.setMessage("Ready to submit?");
