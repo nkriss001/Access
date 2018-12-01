@@ -249,9 +249,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     issues.removeAll(removed);
                     if (issues.size() > 0) {
-                        alerts.setText(issues.size() + " Alerts!");
+                        alerts.setText(issues.size() + " Issues!");
                     } else {
-                        alerts.setText("No Alerts");
+                        alerts.setText("No Issues");
                         alerts.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                     }
 
