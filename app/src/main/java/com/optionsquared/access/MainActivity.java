@@ -155,6 +155,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
+                SlidingUpPanelLayout mLayout = findViewById(R.id.sliding_layout);
+                mLayout.setPanelHeight(400);
                 addMarker(place);
                 getPlace((String) place.getName(), place.getAddress().toString());
             }
@@ -204,40 +206,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mMap.moveCamera(CameraUpdateFactory.newLatLng(p.getLatLng()));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(13));
 
-    }
-
-    void createDummyPlace() {
-
-        SerialPlace foo = new SerialPlace("Dwinelle Hall", "address");
-
-        Review bar = new Review(3, "Dwinelle is unpredictable in terms of elevators working.", (long) 4.20, "Oski", true, 0);
-        Review baz = new Review(1, "The elevator is always broken and the layout is confusing.", (long) 4.20, "Dirks", true, 0);
-        Review b3 = new Review(3, "Dwinelle is unpredictable in terms of elevators working.", (long) 4.20, "Oski", true, 0);
-        Review b4 = new Review(1, "The elevator is always broken and the layout is confusing.", (long) 4.20, "Dirks", true, 0);
-
-        Review bork = new Review(1, "The elevator is down!", (long) 4.20, "Carol Christ", false, 0);
-
-        foo.addReview(b3);
-        foo.addReview(b4);
-        foo.addReview(bar);
-        foo.addReview(baz);
-        foo.addIssue(bork);
-
-        ref.child("places").child("Dwinelle Hall").setValue(foo);
-
-        SerialPlace soda = new SerialPlace("Soda Hall", "address 2");
-
-        Review b5 = new Review(5, "Soda's super easy to navigate.", (long) 4.20, "Alice", true, 0);
-        Review b6 = new Review(4, "The elevator is always available", (long) 4.20, "Bob", true, 0);
-
-        //Review bark = new Review(1, "The elevator is down!", (long) 4.20, "Carol Christ", false, 0);
-
-        soda.addReview(b5);
-        soda.addReview(b6);
-        //foo.addIssue(bark);
-
-        ref.child("places").child("Soda Hall").setValue(soda);
-        selectedLoc = soda;
     }
 
     /** Retrieves the SerialPlace information from the realtime database if it
