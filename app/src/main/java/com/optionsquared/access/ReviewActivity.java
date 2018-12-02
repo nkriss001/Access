@@ -1,14 +1,17 @@
 package com.optionsquared.access;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -81,8 +84,15 @@ public class ReviewActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int item) {
                         if (items[item].equals("Take Photo")) {
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(intent, CAMERA_REQUEST);
+                            if (checkSelfPermission(Manifest.permission.CAMERA)
+                                    != PackageManager.PERMISSION_GRANTED) {
+                                requestPermissions(new String[]{Manifest.permission.CAMERA},
+                                        MY_CAMERA_PERMISSION_CODE);
+                            }
+                            else {
+                                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(intent, CAMERA_REQUEST);
+                            }
                         } else if (items[item].equals("Choose from Gallery")) {
                             Intent galleryIntent = new Intent(Intent.ACTION_PICK,
                                     android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -94,19 +104,6 @@ public class ReviewActivity extends AppCompatActivity {
                     }
                 });
                 builder.show();
-//                Intent galleryintent = new Intent(Intent.ACTION_PICK,
-//                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                galleryintent.setType("image/*");
-//
-//                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-//
-//                Intent chooser = new Intent(Intent.ACTION_CHOOSER);
-//                chooser.putExtra(Intent.EXTRA_INTENT, galleryintent);
-//                chooser.putExtra(Intent.EXTRA_TITLE, "title");
-//
-//                Intent[] intentArray =  {cameraIntent};
-//                chooser.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentArray);
-//                startActivityForResult(chooser, CAMERA_REQUEST);
             }
         });
 
@@ -181,6 +178,22 @@ public class ReviewActivity extends AppCompatActivity {
             }
         });
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == MY_CAMERA_PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "camera permission granted", Toast.LENGTH_LONG).show();
+                Intent cameraIntent = new
+                        Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+            } else {
+                Toast.makeText(this, "camera permission denied", Toast.LENGTH_LONG).show();
+            }
+
+        }
+    }
+
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -192,6 +205,7 @@ public class ReviewActivity extends AppCompatActivity {
                 bp.compress(Bitmap.CompressFormat.PNG,100, byteStream);
                 byte [] b=byteStream.toByteArray();
                 image = Base64.encodeToString(b, Base64.DEFAULT);
+                //System.out.println("IMAGE: " + image);
                 imageView.setImageBitmap(bp);
 
 
@@ -200,7 +214,6 @@ public class ReviewActivity extends AppCompatActivity {
 
             //FROM GALLERY
         else {
-            File fileDirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/TWINE/");
             if (data != null) {
                 Uri selectedImage = data.getData();
                 Bitmap bitmap = null;

@@ -8,6 +8,7 @@ import android.util.Base64;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.Exclude;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -53,8 +54,8 @@ public class SerialPlace implements Serializable {
 
         DataSnapshot imageBitmaps = dataSnapshot.child("images");
         for (DataSnapshot image : imageBitmaps.getChildren()) {
-            String imgTemp = image.toString();
-            addImage(imgTemp);
+            String imgTemp = (String) image.getValue();
+            addImageFirst(imgTemp);
         }
     }
 
@@ -96,7 +97,7 @@ public class SerialPlace implements Serializable {
     }
 
     public void addImage(String image) {
-        this.images.add(image);
+        this.images.add(0, image);
     }
     public void addImageFirst(String image){
         this.images.add(0, image);
