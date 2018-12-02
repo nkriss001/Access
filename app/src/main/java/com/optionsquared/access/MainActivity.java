@@ -128,7 +128,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Review review = (Review) data.getSerializableExtra("review");
                 String image = (String) data.getStringExtra("image");
                 if (image != null){
-                    selectedLoc.addImage(image);
+                    //System.out.println("HERE IN MAIN: IMAGE = " + image);
+                    selectedLoc.addImageFirst(image);
                 }
                 selectedLoc.addReview(review);
                 ref.child("places").child(selectedLoc.key).setValue(selectedLoc);
@@ -229,13 +230,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
                     Bitmap imageDisplay = null;
                     if (selectedLoc.images.size() > 0){
+                        System.out.println("IMAGE_DISPLAY");
                         imageDisplay = selectedLoc.getFirstImageBitmap();
+                        //System.out.println(imageDisplay.toString());
                         imageView.setImageBitmap(imageDisplay);
                     }
                     else {
                         imageView.setImageResource(R.drawable.dwinelle);
                     }
-                    imageView.setImageResource(R.drawable.dwinelle);
                     name.setText(selectedLoc.key);
                     rating.setRating(selectedLoc.avgRating);
                     ArrayList<Review> issues = selectedLoc.issues;
@@ -278,46 +280,169 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 } else {
                     System.out.println("HERE");
                     final SerialPlace newPlace = new SerialPlace(keyString, addr);
-                    final ImageView imageView = findViewById(R.id.locationImage);
-                    ref.child("places").child(keyString).setValue(newPlace);
-                    selectedLoc = newPlace;
 
-                    final TextView name = findViewById(R.id.name);
-                    final TextView alerts = findViewById(R.id.alerts);
-                    final RatingBar rating = findViewById(R.id.rating);
-                    SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+                    String keyAltered = keyString.replace(" ", "%20").trim();
+                    RequestQueue getRequests = Volley.newRequestQueue(c);
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                            (Request.Method.GET, "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input="
+                                    + keyAltered + "&inputtype=textquery&fields=photos,formatted_address,name,rating,opening_hours,geometry&key="
+                                    + APIKEY, null, new Response.Listener<JSONObject>() {
 
-                    imageView.setImageResource(R.drawable.dwinelle);
-                    name.setText(selectedLoc.key);
-                    rating.setRating(selectedLoc.avgRating);
-                    ArrayList<Review> issues = selectedLoc.issues;
-                    if (issues.size() > 0) {
-                        alerts.setText(issues.size() + " Alerts!");
-                    } else {
-                        alerts.setText("No Alerts");
-                    }
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    System.out.println("HERE AND RESPONSE");
 
-                    final RecyclerView recyclerView = findViewById(R.id.recycler);
-                    final LinearLayoutManager manager =
-                            new LinearLayoutManager(
-                                    getApplicationContext());
+                                    JSONObject info = null;
+                                    System.out.println(response);
+                                    try {
+                                        info = response.getJSONArray("candidates").getJSONObject(0);
+                                        if (info.has("photos")) {
+                                            System.out.println("HERE");
+                                            JSONArray photos = info.getJSONArray("photos");
+                                            String photoID = photos.getJSONObject(0).getString("photo_reference");
+                                            RequestQueue getRequests = Volley.newRequestQueue(c);
+                                            ImageRequest imageRequest = new ImageRequest(
+                                                    "https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference="
+                                                            + photoID + "&key=" + APIKEY,
+                                                    new Response.Listener<Bitmap>() { // Bitmap listener
+                                                        @Override
+                                                        public void onResponse(Bitmap response) {
+                                                            // Do something with response
+                                                            final ImageView imageView = findViewById(R.id.locationImage);
+                                                            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                                                            response.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+                                                            byte[] b = byteStream.toByteArray();
+                                                            newPlace.addImageFirst(Base64.encodeToString(b, Base64.DEFAULT));
+                                                            ref.child("places").child(keyString).setValue(newPlace);
+                                                            selectedLoc = newPlace;
 
-                    ArrayList<Object> outputs = new ArrayList<>();
-                    issues = selectedLoc.issues;
-                    ArrayList<Review> reviews = selectedLoc.reviews;
-                    if (!issues.isEmpty()) {
-                        outputs.add("Issues");
-                    }
-                    outputs.addAll(issues);
-                    if (!reviews.isEmpty()) {
-                        outputs.add("Reviews");
-                    }
-                    outputs.addAll(reviews);
-                    ReviewAdapter r = new ReviewAdapter(outputs, selectedLoc, ref);
-                    recyclerView.setAdapter(r);
-                    recyclerView.setLayoutManager(manager);
+                                                            final TextView name = findViewById(R.id.name);
+                                                            final TextView alerts = findViewById(R.id.alerts);
+                                                            final RatingBar rating = findViewById(R.id.rating);
+                                                            SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
 
-                    mLayout.setScrollableView(recyclerView);
+                                                            imageView.setImageResource(R.drawable.dwinelle);
+                                                            name.setText(selectedLoc.key);
+                                                            rating.setRating(selectedLoc.avgRating);
+                                                            ArrayList<Review> issues = selectedLoc.issues;
+                                                            if (issues.size() > 0) {
+                                                                alerts.setText(issues.size() + " Alerts!");
+                                                            } else {
+                                                                alerts.setText("No Alerts");
+                                                            }
+
+                                                            final RecyclerView recyclerView = findViewById(R.id.recycler);
+                                                            final LinearLayoutManager manager =
+                                                                    new LinearLayoutManager(
+                                                                            getApplicationContext());
+
+                                                            ArrayList<Object> outputs = new ArrayList<>();
+                                                            issues = selectedLoc.issues;
+                                                            ArrayList<Review> reviews = selectedLoc.reviews;
+                                                            if (!issues.isEmpty()) {
+                                                                outputs.add("Issues");
+                                                            }
+                                                            outputs.addAll(issues);
+                                                            if (!reviews.isEmpty()) {
+                                                                outputs.add("Reviews");
+                                                            }
+                                                            outputs.addAll(reviews);
+                                                            ReviewAdapter r = new ReviewAdapter(outputs, selectedLoc, ref);
+                                                            recyclerView.setAdapter(r);
+                                                            recyclerView.setLayoutManager(manager);
+
+                                                            mLayout.setScrollableView(recyclerView);
+                                                            imageView.setImageBitmap(response);
+
+
+                                                        }
+                                                    },
+                                                    400,
+                                                    400,
+                                                    ImageView.ScaleType.CENTER_CROP, // Image scale type
+                                                    Bitmap.Config.RGB_565, //Image decode configuration
+                                                    new Response.ErrorListener() { // Error listener
+                                                        @Override
+                                                        public void onErrorResponse(VolleyError error) {
+                                                            // Do something with error response
+                                                            System.out.println("VOLLEY ERROR");
+                                                        }
+                                                    }
+
+
+                                            );
+                                            getRequests.add(imageRequest);
+
+                                            System.out.println("HERE GOT PHOTO");
+                                        }
+                                        else{
+                                            final ImageView imageView = findViewById(R.id.locationImage);
+                                            ref.child("places").child(keyString).setValue(newPlace);
+                                            selectedLoc = newPlace;
+
+                                            final TextView name = findViewById(R.id.name);
+                                            final TextView alerts = findViewById(R.id.alerts);
+                                            final RatingBar rating = findViewById(R.id.rating);
+                                            SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+
+                                            imageView.setImageResource(R.drawable.dwinelle);
+                                            name.setText(selectedLoc.key);
+                                            rating.setRating(selectedLoc.avgRating);
+                                            ArrayList<Review> issues = selectedLoc.issues;
+                                            if (issues.size() > 0) {
+                                                alerts.setText(issues.size() + " Alerts!");
+                                            } else {
+                                                alerts.setText("No Alerts");
+                                            }
+
+                                            final RecyclerView recyclerView = findViewById(R.id.recycler);
+                                            final LinearLayoutManager manager =
+                                                    new LinearLayoutManager(
+                                                            getApplicationContext());
+
+                                            ArrayList<Object> outputs = new ArrayList<>();
+                                            issues = selectedLoc.issues;
+                                            ArrayList<Review> reviews = selectedLoc.reviews;
+                                            if (!issues.isEmpty()) {
+                                                outputs.add("Issues");
+                                            }
+                                            outputs.addAll(issues);
+                                            if (!reviews.isEmpty()) {
+                                                outputs.add("Reviews");
+                                            }
+                                            outputs.addAll(reviews);
+                                            ReviewAdapter r = new ReviewAdapter(outputs, selectedLoc, ref);
+                                            recyclerView.setAdapter(r);
+                                            recyclerView.setLayoutManager(manager);
+
+                                            mLayout.setScrollableView(recyclerView);
+                                            imageView.setImageResource(R.drawable.dwinelle);
+
+                                        }
+
+
+                                    } catch (JSONException e) {
+
+                                    }
+                                }
+                            }, new Response.ErrorListener() {
+
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    System.out.println("ERROR IN VOLLEY: " + error.toString());
+
+                                }
+                            });
+                    getRequests.add(jsonObjectRequest);
+
+                    System.out.println("HERE");
+
+
+
+
+
+
+
                 }
             }
 
