@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (resultCode == RESULT_OK) {
                 Review review = (Review) data.getSerializableExtra("review");
                 String image = (String) data.getStringExtra("image");
+                System.out.println("IMAGE FROM REVIEW: " +  image);
                 if (image != null){
                     System.out.println("HERE IN MAIN: IMAGE = " + image);
                     selectedLoc.addImageFirst(image);

@@ -205,7 +205,7 @@ public class ReviewActivity extends AppCompatActivity {
                 bp.compress(Bitmap.CompressFormat.PNG,100, byteStream);
                 byte [] b=byteStream.toByteArray();
                 image = Base64.encodeToString(b, Base64.DEFAULT);
-                //System.out.println("IMAGE: " + image);
+                System.out.println("IMAGE: " + image);
                 imageView.setImageBitmap(bp);
 
 
