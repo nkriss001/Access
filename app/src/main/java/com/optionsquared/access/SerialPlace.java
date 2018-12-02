@@ -55,6 +55,7 @@ public class SerialPlace implements Serializable {
         DataSnapshot imageBitmaps = dataSnapshot.child("images");
         for (DataSnapshot image : imageBitmaps.getChildren()) {
             String imgTemp = (String) image.getValue();
+            System.out.println("IMAGE TEMPS  " + imgTemp);
             addImageFirst(imgTemp);
         }
     }
@@ -62,10 +63,13 @@ public class SerialPlace implements Serializable {
     @Exclude
     private Bitmap stringToBitMap(String encodedString){
         try {
+            System.out.println("HERE WITH ENCODED " + encodedString);
             byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
+            System.out.println("HERE WITH ENCODED " + encodedString);
             Bitmap bitmap=BitmapFactory.decodeByteArray(encodeByte, 0, encodeByte.length);
             return bitmap;
         } catch(Exception e) {
+            System.out.println("ERROR!");
             e.getMessage();
             return null;
         }

@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 Review review = (Review) data.getSerializableExtra("review");
                 String image = (String) data.getStringExtra("image");
                 if (image != null){
-                    //System.out.println("HERE IN MAIN: IMAGE = " + image);
+                    System.out.println("HERE IN MAIN: IMAGE = " + image);
                     selectedLoc.addImageFirst(image);
                 }
                 selectedLoc.addReview(review);
@@ -159,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 SlidingUpPanelLayout mLayout = findViewById(R.id.sliding_layout);
                 mLayout.setPanelHeight(400);
                 addMarker(place);
+                System.out.println("HERE");
                 getPlace((String) place.getName(), place.getAddress().toString());
             }
 
@@ -216,6 +217,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     void getPlace(String key, final String addr) {
         final String keyString = key.replace(".", "");
         DatabaseReference placeRef = ref.child("places").child(keyString);
+        System.out.println("IN DATA CHANGE GET PLACE");
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
@@ -232,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (selectedLoc.images.size() > 0){
                         System.out.println("IMAGE_DISPLAY");
                         imageDisplay = selectedLoc.getFirstImageBitmap();
+                        System.out.println("IMAGE DISPLAY: " + imageDisplay);
                         //System.out.println(imageDisplay.toString());
                         imageView.setImageBitmap(imageDisplay);
                     }
