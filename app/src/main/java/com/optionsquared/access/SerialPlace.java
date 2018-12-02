@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.util.Base64;
 
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.Exclude;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class SerialPlace implements Serializable {
         }
     }
 
-
+    @Exclude
     private Bitmap stringToBitMap(String encodedString){
         try {
             byte [] encodeByte=Base64.decode(encodedString,Base64.DEFAULT);
@@ -100,7 +101,7 @@ public class SerialPlace implements Serializable {
     public void addImageFirst(String image){
         this.images.add(0, image);
     }
-
+    @Exclude
     public ArrayList<Bitmap> getImageBitmaps() {
         ArrayList<Bitmap> bms = new ArrayList<>();
         for (String i : this.images) {
@@ -108,6 +109,7 @@ public class SerialPlace implements Serializable {
         }
         return bms;
     }
+    @Exclude
     public Bitmap getFirstImageBitmap(){
         if (images.size() > 0) {
             return stringToBitMap(images.get(0));

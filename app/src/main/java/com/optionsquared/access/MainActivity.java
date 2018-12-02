@@ -60,6 +60,7 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -74,20 +75,20 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     static int REVIEW_REQUEST = 1;
     static int ISSUE_REQUEST = 2;
     private Context c;
+    LinearLayout card;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.AppTheme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.database = FirebaseDatabase.getInstance();
         database.setPersistenceEnabled(true);
         ref = database.getReference();
+        card = findViewById(R.id.card);
 
         Button reviewButton = findViewById(R.id.reviewButton);
         Button issueButton = findViewById(R.id.issueButton);
 
-        createDummyPlace();
-
-        getPlace("foo", "addr");
         initMap();
         c = getApplicationContext();
 
@@ -115,9 +116,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
 
         final RecyclerView recyclerView = findViewById(R.id.recycler);
-        final LinearLayoutManager manager =
-                new LinearLayoutManager(
-                        this);
+        final LinearLayoutManager manager = new LinearLayoutManager(this);
 
     }
 
@@ -148,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private void initMap() {
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -168,6 +168,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
 
     }
 
@@ -266,24 +267,42 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     else {
                         imageView.setImageResource(R.drawable.dwinelle);
                     }
+                    imageView.setImageResource(R.drawable.dwinelle);
                     name.setText(selectedLoc.key);
                     rating.setRating(selectedLoc.avgRating);
                     ArrayList<Review> issues = selectedLoc.issues;
-                    if (issues.size() > 0) {
-                        alerts.setText(issues.size() + " Alerts!");
+                    ArrayList<Review> removed = new ArrayList<>();
+                    long time = Calendar.getInstance().getTimeInMillis();
+                    for (Review issue : issues) {
+                        if (time - issue.time > (long) 8.64e+7) {
+                            removed.add(issue);
+                        }
+                    }
+                    issues.removeAll(removed);
+                    if (issues.size() == 1) {
+                        alerts.setText(issues.size() + " Issue!");
+                    } else if (issues.size() > 1) {
+                        alerts.setText(issues.size() + " Issues!");
                     } else {
-                        alerts.setText("No Alerts");
+                        alerts.setText("No Issues");
+                        alerts.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0);
                     }
 
                     final RecyclerView recyclerView = findViewById(R.id.recycler);
                     final LinearLayoutManager manager =
                             new LinearLayoutManager(getApplicationContext());
-                    ArrayList<Review> outputs = new ArrayList<>();
+                    ArrayList<Object> outputs = new ArrayList<>();
                     issues = selectedLoc.issues;
                     ArrayList<Review> reviews = selectedLoc.reviews;
+                    if (!issues.isEmpty()) {
+                        outputs.add("Issues");
+                    }
                     outputs.addAll(issues);
+                    if (!reviews.isEmpty()) {
+                        outputs.add("Reviews");
+                    }
                     outputs.addAll(reviews);
-                    ReviewAdapter r = new ReviewAdapter(outputs);
+                    ReviewAdapter r = new ReviewAdapter(outputs, selectedLoc, ref);
                     recyclerView.setAdapter(r);
                     recyclerView.setLayoutManager(manager);
 
@@ -314,12 +333,19 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final LinearLayoutManager manager =
                             new LinearLayoutManager(
                                     getApplicationContext());
-                    ArrayList<Review> outputs = new ArrayList<>();
+
+                    ArrayList<Object> outputs = new ArrayList<>();
                     issues = selectedLoc.issues;
                     ArrayList<Review> reviews = selectedLoc.reviews;
+                    if (!issues.isEmpty()) {
+                        outputs.add("Issues");
+                    }
                     outputs.addAll(issues);
+                    if (!reviews.isEmpty()) {
+                        outputs.add("Reviews");
+                    }
                     outputs.addAll(reviews);
-                    ReviewAdapter r = new ReviewAdapter(outputs);
+                    ReviewAdapter r = new ReviewAdapter(outputs, selectedLoc, ref);
                     recyclerView.setAdapter(r);
                     recyclerView.setLayoutManager(manager);
 

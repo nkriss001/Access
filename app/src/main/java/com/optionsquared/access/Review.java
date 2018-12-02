@@ -23,11 +23,6 @@ public class Review implements Serializable {
         this.votes = votes;
     }
 
-    Review(int rating, String text) {
-        this.rating = rating;
-        this.text = text;
-    }
-
     Review(DataSnapshot review) {
         this.rating = ((Long) review.child("rating").getValue()).intValue();
         this.text = (String) review.child("text").getValue();

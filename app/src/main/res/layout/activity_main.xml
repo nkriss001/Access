@@ -48,24 +48,29 @@
             android:layout_height="match_parent"
             android:background="#ffffff"
             android:clickable="true"
-            android:focusable="false"
-            android:orientation="vertical">
+            android:focusable="true"
+            android:orientation="vertical"
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_weight="0"
-                android:orientation="horizontal">
+                android:background="@drawable/dropshadow"
+                android:divider="@android:color/black"
+                android:orientation="horizontal"
+                android:visibility="visible">
 
                 <ImageView
                     android:id="@+id/locationImage"
                     android:layout_width="175dp"
-                    android:layout_height="175dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginLeft="10dp"
                     android:layout_weight="1"
                     android:src="@drawable/dwinelle"
+                    android:visibility="visible"
                     app:srcCompat="@drawable/common_full_open_on_phone" />
 
                 <LinearLayout
@@ -73,85 +78,116 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10sp"
                     android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="visible">
 
                     <TextView
                         android:id="@+id/name"
-                        android:layout_width="181dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8sp"
                         android:gravity="center"
-                        android:paddingBottom="10sp"
-                        android:paddingTop="10sp"
-                        android:text="NAME"
+                        android:maxLines="2"
                         android:textAlignment="center"
-                        android:textSize="30sp" />
+                        android:textSize="30sp"
+                        android:visibility="visible" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:visibility="visible">
+
+                    </LinearLayout>
 
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:visibility="visible">
 
                         <RatingBar
                             android:id="@+id/rating"
-                            style="@android:style/Widget.DeviceDefault.RatingBar.Indicator"
+                            style="?android:attr/ratingBarStyleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginStart="30dp"
                             android:layout_weight="1"
                             android:max="5"
                             android:numStars="5"
-                            android:paddingRight="0dp"
-                            android:scaleX=".7"
-                            android:scaleY=".7"
+                            android:rating="5"
+                            android:scaleX="1.2"
+                            android:scaleY="1.2"
                             android:theme="@style/RatingBar"
-                            tools:layout_editor_absoluteX="0dp"
-                            tools:layout_editor_absoluteY="370dp" />
+                            android:visibility="visible"
+                            sothree:layout_constraintBottom_toBottomOf="parent"
+                            sothree:layout_constraintStart_toStartOf="parent"
+                            sothree:layout_constraintTop_toTopOf="parent" />
 
                         <TextView
                             android:id="@+id/alerts"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="30dp"
+                            android:layout_marginStart="40dp"
                             android:layout_weight="1"
-                            android:gravity="center"
+                            android:drawableLeft="@drawable/warning_wrapper"
                             android:paddingLeft="0dp"
                             android:paddingRight="10dp"
                             android:paddingTop="10dp"
                             android:text="Alert"
-                            android:textAlignment="textEnd"
-                            android:textSize="18sp"
-                            tools:ignore="RtlCompat"
-                            tools:layout_editor_absoluteX="165dp"
-                            tools:layout_editor_absoluteY="484dp" />
+                            android:textSize="16sp"
+                            android:translationY="-6dp"
+                            android:visibility="visible"
+                            sothree:layout_constraintBottom_toBottomOf="parent"
+                            sothree:layout_constraintEnd_toEndOf="parent"
+                            sothree:layout_constraintStart_toEndOf="@+id/rating"
+                            sothree:layout_constraintTop_toTopOf="parent" />
 
                     </android.support.constraint.ConstraintLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:layout_marginBottom="8sp"
                         android:orientation="horizontal"
                         android:paddingBottom="5sp"
                         android:paddingLeft="0dp"
                         android:paddingRight="0dp"
-                        android:paddingTop="5sp">
+                        android:paddingTop="5sp"
+                        android:visibility="visible">
 
                         <Button
                             android:id="@+id/reviewButton"
-                            android:layout_width="240sp"
-                            android:layout_height="match_parent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="38dp"
                             android:layout_weight="1"
+                            android:background="@drawable/button_bg"
                             android:paddingBottom="10sp"
                             android:paddingTop="10sp"
                             android:text="Add Review"
-                            android:textSize="13sp" />
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:visibility="visible" />
+
+                        <Space
+                            android:layout_width="wrap_content"
+                            android:layout_height="38dp"
+                            android:layout_weight=".7"
+                            android:visibility="visible" />
 
                         <Button
                             android:id="@+id/issueButton"
-                            android:layout_width="240sp"
-                            android:layout_height="match_parent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="38dp"
                             android:layout_weight="1"
+                            android:background="@drawable/button_bg"
                             android:paddingBottom="10sp"
                             android:paddingTop="10sp"
                             android:text="Report Issue"
-                            android:textSize="13sp" />
+                            android:textColor="@color/white"
+                            android:textSize="13sp"
+                            android:visibility="visible" />
                     </LinearLayout>
 
                 </LinearLayout>
@@ -163,7 +199,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center|top"
-                android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
+                android:scrollbars="vertical"
+                android:visibility="visible"></android.support.v7.widget.RecyclerView>
         </LinearLayout>
 
     </com.sothree.slidinguppanel.SlidingUpPanelLayout>
