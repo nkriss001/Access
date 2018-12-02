@@ -13,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,6 +23,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
@@ -39,6 +41,7 @@ public class ReviewActivity extends AppCompatActivity {
     private static final int PHOTOS_REQUEST = 2000;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
     private ImageView imageView;
+    private String image = null;
 
 
     @Override
@@ -132,6 +135,7 @@ public class ReviewActivity extends AppCompatActivity {
 //                            SerialPlace location = (SerialPlace) getIntent().getSerializableExtra("location");
                             Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
                             intent.putExtra("review", review);
+                            intent.putExtra("image", image);
                             setResult(RESULT_OK, intent);
                             finish();
                         }
@@ -182,26 +186,36 @@ public class ReviewActivity extends AppCompatActivity {
         if (requestCode == CAMERA_REQUEST) {
             if (resultCode == this.RESULT_OK) {
                 Bitmap bp = (Bitmap) data.getExtras().get("data");
+                ByteArrayOutputStream byteStream =new  ByteArrayOutputStream();
+                bp.compress(Bitmap.CompressFormat.PNG,100, byteStream);
+                byte [] b=byteStream.toByteArray();
+                image = Base64.encodeToString(b, Base64.DEFAULT);
                 imageView.setImageBitmap(bp);
-                File fileDirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/Images/");
 
 
             }
         }
 
             //FROM GALLERY
-        else{
+        else {
             File fileDirectory = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/Documents/TWINE/");
-            Uri selectedImage = data.getData();
-            Bitmap bitmap = null;
-            try {
-                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (data != null) {
+                Uri selectedImage = data.getData();
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+                    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
+                    byte[] b = byteStream.toByteArray();
+                    image = Base64.encodeToString(b, Base64.DEFAULT);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if (bitmap != null) {
+                    imageView.setImageBitmap(bitmap);
+                }
             }
-            imageView.setImageBitmap(bitmap);
-
-            }
+        }
     }
 }
 

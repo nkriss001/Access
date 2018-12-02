@@ -1,12 +1,17 @@
 package com.optionsquared.access;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -19,6 +24,13 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -39,7 +51,14 @@ import com.google.firebase.database.core.Repo;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
@@ -54,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private final String APIKEY = "AIzaSyBbkrnKO95otvPVdAYWwNGCa2Sxx6Vcxik";
     static int REVIEW_REQUEST = 1;
     static int ISSUE_REQUEST = 2;
-
+    private Context c;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         getPlace("foo", "addr");
         initMap();
+        c = getApplicationContext();
 
         reviewButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +127,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         if (requestCode == REVIEW_REQUEST) {
             if (resultCode == RESULT_OK) {
                 Review review = (Review) data.getSerializableExtra("review");
+                String image = (String) data.getStringExtra("image");
+                if (image != null){
+                    selectedLoc.addImage(image);
+                }
                 selectedLoc.addReview(review);
                 ref.child("places").child(selectedLoc.key).setValue(selectedLoc);
                 getPlace(selectedLoc.key, selectedLoc.addr);
@@ -182,6 +206,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     void createDummyPlace() {
+
         SerialPlace foo = new SerialPlace("Dwinelle Hall", "address");
 
         Review bar = new Review(3, "Dwinelle is unpredictable in terms of elevators working.", (long) 4.20, "Oski", true, 0);
@@ -211,8 +236,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //foo.addIssue(bark);
 
         ref.child("places").child("Soda Hall").setValue(soda);
-        ref.child("places").child("Soda Hall").child("avgRating").setValue(5.0);
-
         selectedLoc = soda;
     }
 
@@ -221,8 +244,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
      * @param key
      */
     void getPlace(String key, final String addr) {
-        final String keyString = key;
-        DatabaseReference placeRef = ref.child("places").child(key);
+        final String keyString = key.replace(".", "");
+        DatabaseReference placeRef = ref.child("places").child(keyString);
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
@@ -235,8 +258,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     final RatingBar rating = findViewById(R.id.rating);
                     final ImageView imageView = findViewById(R.id.locationImage);
                     SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
-
-                    imageView.setImageResource(R.drawable.dwinelle);
+                    Bitmap imageDisplay = null;
+                    if (selectedLoc.images.size() > 0){
+                        imageDisplay = selectedLoc.getFirstImageBitmap();
+                        imageView.setImageBitmap(imageDisplay);
+                    }
+                    else {
+                        imageView.setImageResource(R.drawable.dwinelle);
+                    }
                     name.setText(selectedLoc.key);
                     rating.setRating(selectedLoc.avgRating);
                     ArrayList<Review> issues = selectedLoc.issues;
@@ -260,14 +289,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                     mLayout.setScrollableView(recyclerView);
                 } else {
-                    SerialPlace newPlace = new SerialPlace(keyString, addr);
+                    System.out.println("HERE");
+                    final SerialPlace newPlace = new SerialPlace(keyString, addr);
+                    final ImageView imageView = findViewById(R.id.locationImage);
                     ref.child("places").child(keyString).setValue(newPlace);
                     selectedLoc = newPlace;
 
                     final TextView name = findViewById(R.id.name);
                     final TextView alerts = findViewById(R.id.alerts);
                     final RatingBar rating = findViewById(R.id.rating);
-                    final ImageView imageView = findViewById(R.id.locationImage);
                     SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
 
                     imageView.setImageResource(R.drawable.dwinelle);
