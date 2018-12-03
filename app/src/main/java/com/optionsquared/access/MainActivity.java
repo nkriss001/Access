@@ -462,6 +462,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             });
                     getRequests.add(jsonObjectRequest);
 
+
                     //System.out.println("HERE");
 
                 }
