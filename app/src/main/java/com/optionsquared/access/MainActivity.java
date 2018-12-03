@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onPlaceSelected(Place place) {
                 SlidingUpPanelLayout mLayout = findViewById(R.id.sliding_layout);
-                mLayout.setPanelHeight(250);
+                mLayout.setPanelHeight(500);
                 addMarker(place);
                 //System.out.println("HERE");
                 getPlace((String) place.getName(), place.getAddress().toString());
