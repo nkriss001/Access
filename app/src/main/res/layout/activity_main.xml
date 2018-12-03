@@ -130,6 +130,7 @@
                             android:layout_marginStart="40dp"
                             android:layout_weight="1"
                             android:drawableLeft="@drawable/warning_wrapper"
+                            android:fontFamily="@font/lato"
                             android:paddingLeft="0dp"
                             android:paddingRight="10dp"
                             android:paddingTop="10dp"
