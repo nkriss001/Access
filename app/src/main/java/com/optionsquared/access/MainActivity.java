@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         final RecyclerView recyclerView = findViewById(R.id.recycler);
         final LinearLayoutManager manager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(manager);
 
     }
 
@@ -153,11 +154,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         placeAutoComplete = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete);
+
+        placeAutoComplete.getView().findViewById(R.id.place_autocomplete_clear_button)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        SlidingUpPanelLayout mLayout = findViewById(R.id.sliding_layout);
+                        mLayout.setPanelHeight(0);
+                        placeAutoComplete.setText("");
+                    }
+                });
+
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 SlidingUpPanelLayout mLayout = findViewById(R.id.sliding_layout);
-                mLayout.setPanelHeight(400);
+                mLayout.setPanelHeight(250);
                 addMarker(place);
                 System.out.println("HERE");
                 getPlace((String) place.getName(), place.getAddress().toString());
@@ -276,8 +288,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     outputs.addAll(reviews);
                     ReviewAdapter r = new ReviewAdapter(outputs, selectedLoc, ref);
-                    recyclerView.setAdapter(r);
                     recyclerView.setLayoutManager(manager);
+                    recyclerView.setAdapter(r);
 
                     mLayout.setScrollableView(recyclerView);
                 } else {
@@ -439,12 +451,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     getRequests.add(jsonObjectRequest);
 
                     System.out.println("HERE");
-
-
-
-
-
-
 
                 }
             }
