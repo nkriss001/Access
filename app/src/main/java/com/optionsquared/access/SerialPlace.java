@@ -56,7 +56,7 @@ public class SerialPlace implements Serializable {
         for (DataSnapshot image : imageBitmaps.getChildren()) {
             String imgTemp = (String) image.getValue();
             System.out.println("IMAGE TEMPS  " + imgTemp);
-            addImageFirst(imgTemp);
+            addImage(imgTemp);
         }
     }
 
