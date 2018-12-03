@@ -242,7 +242,7 @@ public class ReviewActivity extends AppCompatActivity {
                 String picturePath = cursor.getString(columnIndex);
                 cursor.close();
                 //System.out.println("PICTURE PATH: " + picturePath);
-                //imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
                 image = picturePath;
                 picType = "gallery";
                 }
