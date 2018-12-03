@@ -3,6 +3,7 @@ package com.optionsquared.access;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.support.constraint.ConstraintLayout;
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, ReviewActivity.class);
-                i.putExtra("location", selectedLoc);
+                //i.putExtra("location", selectedLoc);
                 startActivityForResult(i, REVIEW_REQUEST);
             }
         });
@@ -105,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 Intent i = new Intent(MainActivity.this, ReportIssueActivity.class);
-                i.putExtra("location", selectedLoc);
+                //i.putExtra("location", selectedLoc);
                 startActivityForResult(i, ISSUE_REQUEST);
             }
         });
@@ -117,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         final RecyclerView recyclerView = findViewById(R.id.recycler);
         final LinearLayoutManager manager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(manager);
 
     }
 
@@ -127,10 +129,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (resultCode == RESULT_OK) {
                 Review review = (Review) data.getSerializableExtra("review");
                 String image = (String) data.getStringExtra("image");
-                System.out.println("IMAGE FROM REVIEW: " +  image);
+                String type = (String) data.getStringExtra("type");
+                //System.out.println("IMAGE FROM REVIEW: " +  image);
                 if (image != null){
-                    System.out.println("HERE IN MAIN: IMAGE = " + image);
-                    selectedLoc.addImageFirst(image);
+                    if (type.equals("camera")) {
+                        //System.out.println("HERE IN MAIN: IMAGE = " + image);
+                        selectedLoc.addImageFirst(image);
+                    }
+                    else{
+                        Bitmap bm = BitmapFactory.decodeFile(image);
+                        ByteArrayOutputStream byteStream = new  ByteArrayOutputStream();
+                        bm.compress(Bitmap.CompressFormat.PNG,100, byteStream);
+                        byte [] b=byteStream.toByteArray();
+                        image = Base64.encodeToString(b, Base64.DEFAULT);
+                        selectedLoc.addImageFirst(image);
+
+                    }
                 }
                 selectedLoc.addReview(review);
                 ref.child("places").child(selectedLoc.key).setValue(selectedLoc);
@@ -154,13 +168,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         placeAutoComplete = (PlaceAutocompleteFragment) getFragmentManager().findFragmentById(R.id.place_autocomplete);
+
+        placeAutoComplete.getView().findViewById(R.id.place_autocomplete_clear_button)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        SlidingUpPanelLayout mLayout = findViewById(R.id.sliding_layout);
+                        mLayout.setPanelHeight(0);
+                        placeAutoComplete.setText("");
+                    }
+                });
+
         placeAutoComplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 SlidingUpPanelLayout mLayout = findViewById(R.id.sliding_layout);
-                mLayout.setPanelHeight(400);
+                mLayout.setPanelHeight(250);
                 addMarker(place);
-                System.out.println("HERE");
+                //System.out.println("HERE");
                 getPlace((String) place.getName(), place.getAddress().toString());
             }
 
@@ -218,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     void getPlace(String key, final String addr) {
         final String keyString = key.replace(".", "");
         DatabaseReference placeRef = ref.child("places").child(keyString);
-        System.out.println("IN DATA CHANGE GET PLACE");
+        //System.out.println("IN DATA CHANGE GET PLACE");
 
         ValueEventListener valueEventListener = new ValueEventListener() {
             @Override
@@ -233,9 +258,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     SlidingUpPanelLayout mLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
                     Bitmap imageDisplay = null;
                     if (selectedLoc.images.size() > 0){
-                        System.out.println("IMAGE_DISPLAY");
                         imageDisplay = selectedLoc.getFirstImageBitmap();
-                        System.out.println("IMAGE DISPLAY: " + imageDisplay);
                         //System.out.println(imageDisplay.toString());
                         imageView.setImageBitmap(imageDisplay);
                     }
@@ -277,12 +300,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     }
                     outputs.addAll(reviews);
                     ReviewAdapter r = new ReviewAdapter(outputs, selectedLoc, ref);
-                    recyclerView.setAdapter(r);
                     recyclerView.setLayoutManager(manager);
+                    recyclerView.setAdapter(r);
 
                     mLayout.setScrollableView(recyclerView);
                 } else {
-                    System.out.println("HERE");
+                    //System.out.println("HERE");
                     final SerialPlace newPlace = new SerialPlace(keyString, addr);
 
                     String keyAltered = keyString.replace(" ", "%20").trim();
@@ -294,14 +317,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 @Override
                                 public void onResponse(JSONObject response) {
-                                    System.out.println("HERE AND RESPONSE");
+                                    //System.out.println("HERE AND RESPONSE");
 
                                     JSONObject info = null;
-                                    System.out.println(response);
+                                    //System.out.println(response);
                                     try {
                                         info = response.getJSONArray("candidates").getJSONObject(0);
                                         if (info.has("photos")) {
-                                            System.out.println("HERE");
+                                            //System.out.println("HERE");
                                             JSONArray photos = info.getJSONArray("photos");
                                             String photoID = photos.getJSONObject(0).getString("photo_reference");
                                             RequestQueue getRequests = Volley.newRequestQueue(c);
@@ -369,7 +392,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                                         @Override
                                                         public void onErrorResponse(VolleyError error) {
                                                             // Do something with error response
-                                                            System.out.println("VOLLEY ERROR");
+                                                            //System.out.println("VOLLEY ERROR");
                                                         }
                                                     }
 
@@ -377,7 +400,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                                             );
                                             getRequests.add(imageRequest);
 
-                                            System.out.println("HERE GOT PHOTO");
+                                            //System.out.println("HERE GOT PHOTO");
                                         }
                                         else{
                                             final ImageView imageView = findViewById(R.id.locationImage);
@@ -433,19 +456,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    System.out.println("ERROR IN VOLLEY: " + error.toString());
+                                    //System.out.println("ERROR IN VOLLEY: " + error.toString());
 
                                 }
                             });
                     getRequests.add(jsonObjectRequest);
 
-                    System.out.println("HERE");
-
-
-
-
-
-
+                    //System.out.println("HERE");
 
                 }
             }

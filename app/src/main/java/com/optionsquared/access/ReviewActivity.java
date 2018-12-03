@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,8 +44,10 @@ public class ReviewActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST = 1888;
     private static final int PHOTOS_REQUEST = 2000;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
+    private static final int PICK_FROM_GALLERY = 1;
     private ImageView imageView;
     private String image = null;
+    private String picType = null;
 
 
     @Override
@@ -94,8 +97,11 @@ public class ReviewActivity extends AppCompatActivity {
                                 startActivityForResult(intent, CAMERA_REQUEST);
                             }
                         } else if (items[item].equals("Choose from Gallery")) {
-                            Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                                    android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                            if (ActivityCompat.checkSelfPermission(ReviewActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(ReviewActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, PICK_FROM_GALLERY);
+                                //System.out.println("HERE IN REQUESTING IMAGES");
+                            }
+                            Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                             // Start the Intent
                             startActivityForResult(galleryIntent, PHOTOS_REQUEST);
                         } else if (items[item].equals("Cancel")) {
@@ -133,7 +139,10 @@ public class ReviewActivity extends AppCompatActivity {
 //                            SerialPlace location = (SerialPlace) getIntent().getSerializableExtra("location");
                             Intent intent = new Intent(ReviewActivity.this, MainActivity.class);
                             intent.putExtra("review", review);
+                            System.out.println("SUBMIT REVIEW IMAGE GALLERY: " + image);
                             intent.putExtra("image", image);
+                            intent.putExtra("type", picType);
+
                             setResult(RESULT_OK, intent);
                             finish();
                         }
@@ -192,6 +201,16 @@ public class ReviewActivity extends AppCompatActivity {
             }
 
         }
+        else{
+            // If request is cancelled, the result arrays are empty.
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //System.out.println("HERE IN ON REQUEST IMAGES");
+                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(galleryIntent, PICK_FROM_GALLERY);
+            } else {
+                //do something like displaying a message that he didn`t allow the app to access gallery and you wont be able to let him select from gallery
+            }
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -205,9 +224,9 @@ public class ReviewActivity extends AppCompatActivity {
                 bp.compress(Bitmap.CompressFormat.PNG,100, byteStream);
                 byte [] b=byteStream.toByteArray();
                 image = Base64.encodeToString(b, Base64.DEFAULT);
-                System.out.println("IMAGE: " + image);
+                //System.out.println("IMAGE: " + image);
                 imageView.setImageBitmap(bp);
-
+                picType = "camera";
 
             }
         }
@@ -216,21 +235,18 @@ public class ReviewActivity extends AppCompatActivity {
         else {
             if (data != null) {
                 Uri selectedImage = data.getData();
-                Bitmap bitmap = null;
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
-                    ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
-                    byte[] b = byteStream.toByteArray();
-                    image = Base64.encodeToString(b, Base64.DEFAULT);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                if (bitmap != null) {
-                    imageView.setImageBitmap(bitmap);
+                String[] filePathColumn = { MediaStore.Images.Media.DATA };
+                Cursor cursor = getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                String picturePath = cursor.getString(columnIndex);
+                cursor.close();
+                //System.out.println("PICTURE PATH: " + picturePath);
+                //imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                image = picturePath;
+                picType = "gallery";
                 }
             }
         }
     }
-}
 

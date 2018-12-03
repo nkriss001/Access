@@ -101,7 +101,7 @@ public class ReviewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             reviewHolder.ratingBar.setRating(review.rating);
             Calendar currentDate = Calendar.getInstance();
             currentDate.setTimeInMillis(review.time);
-            SimpleDateFormat sdf = new SimpleDateFormat("h:mm a MM/dd/YYYY");
+            SimpleDateFormat sdf = new SimpleDateFormat("h:mm a MM/dd/yyyy");
             reviewHolder.date.setText(sdf.format(review.time));
 
             final TextView score = reviewHolder.score;
