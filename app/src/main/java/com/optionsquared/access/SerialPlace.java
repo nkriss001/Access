@@ -11,6 +11,7 @@ import com.google.firebase.database.Exclude;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class SerialPlace implements Serializable {
     public ArrayList<Review> reviews;
@@ -74,15 +75,21 @@ public class SerialPlace implements Serializable {
     }
 
     public void addReview(Review r) {
-        if (r != null) {
+        if (r != null){
             reviews.add(r);
+            Collections.sort(reviews);
+            Collections.reverse(reviews);
+        }
             // recompute the average rating
             setRating();
-        }
     }
 
     public void addIssue(Review r) {
-        issues.add(r);
+       if (r != null){
+           issues.add(r);
+           Collections.sort(issues);
+           Collections.reverse(issues);
+       }
     }
 
 

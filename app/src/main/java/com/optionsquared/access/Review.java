@@ -1,16 +1,20 @@
 package com.optionsquared.access;
 
+import android.support.annotation.NonNull;
+
 import com.google.firebase.database.DataSnapshot;
 
 import java.io.Serializable;
 
-public class Review implements Serializable {
+public class Review implements Serializable, Comparable<Review> {
 
     public int rating;
     public String text;
     public long time;
     public String name;
     public boolean isReview;
+
+
     public int votes;
     // TODO: add way of storing photo, possibly just string id of location in firebase database
 
@@ -37,5 +41,10 @@ public class Review implements Serializable {
 
     public int getRating() {
         return this.rating;
+    }
+
+    @Override
+    public int compareTo(@NonNull Review review) {
+        return (int)(this.time - review.time);
     }
 }
